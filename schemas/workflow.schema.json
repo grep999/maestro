@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Maestro Workflow Snapshot",
+  "type": "object",
+  "required": [
+    "id",
+    "project_id",
+    "title",
+    "objective",
+    "stage",
+    "status",
+    "revision",
+    "cycle",
+    "progress",
+    "packets"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "enum": [
+        "GROUNDING",
+        "MOMENTUM",
+        "MASTERY",
+        "REPETITION"
+      ]
+    },
+    "status": {
+      "enum": [
+        "ACTIVE",
+        "BLOCKED",
+        "COMPLETED",
+        "CANCELLED"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cycle": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "progress": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "packets": {
+      "type": "object",
+      "required": [
+        "grounding",
+        "momentum",
+        "mastery",
+        "repetition"
+      ],
+      "properties": {
+        "grounding": {
+          "type": "object"
+        },
+        "momentum": {
+          "type": "object"
+        },
+        "mastery": {
+          "type": "object"
+        },
+        "repetition": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
