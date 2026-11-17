@@ -1,0 +1,33 @@
+name: TRANSFORMACJA validation
+
+on:
+  push:
+    paths:
+      - "projects/transformacja/**"
+      - ".github/workflows/transformacja-validate.yml"
+  pull_request:
+    paths:
+      - "projects/transformacja/**"
+      - ".github/workflows/transformacja-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/transformacja
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run simulation regression tests and provenance checks
+        run: npm test
+      - name: Check browser modules
+        run: npm run check
