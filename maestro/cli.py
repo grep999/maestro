@@ -25,7 +25,7 @@ def main(argv=None):
     x=s.add_parser("complete-work"); x.add_argument("wid"); x.add_argument("item"); x.add_argument("--revision",type=int,required=True); x.add_argument("--evidence",required=True)
     x=s.add_parser("work-items"); x.add_argument("wid")
     x=s.add_parser("assign"); x.add_argument("wid"); x.add_argument("role"); x.add_argument("capability"); x.add_argument("packet")
-    x=s.add_parser("assignment"); x.add_argument("aid"); x.add_argument("status"); x.add_argument("--result")
+    x=s.add_parser("assignment"); x.add_argument("aid"); x.add_argument("status",choices=["ACCEPTED","RUNNING","RETURNED","CANCELLED"]); x.add_argument("--result")
     x=s.add_parser("assignments"); x.add_argument("wid")
     x=s.add_parser("events"); x.add_argument("wid")
     a=p.parse_args(argv); e=Maestro(a.db)
