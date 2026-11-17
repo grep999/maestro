@@ -1,0 +1,8 @@
+period,remaining_state_owned_enterprises,privatizations_completed_cumulative,privatizations_completed_flow,privatizations_started_cumulative,privatizations_started_flow,leasing_completed_cumulative,leasing_started_cumulative,bankruptcy_completed_cumulative,bankruptcy_started_cumulative,capital_privatization_completed_cumulative,commercialized_cumulative,nif_programme_cumulative,privatization_budget_revenue_mln_pln,source_id,source_locator,notes
+1990,8453,6,6,130,130,0,31,0,18,6,38,0,,S003,"Table 2, Poland: Privatization 1990-96","Cumulative totals and annual flows are separate columns; 1990 revenue not reported in this table."
+1991,8228,228,222,1249,1119,182,449,19,540,27,260,0,171,S003,"Table 2, Poland: Privatization 1990-96","Budget revenue is annual flow in million złoty."
+1992,7248,612,384,2056,807,475,719,86,857,51,480,0,484,S003,"Table 2, Poland: Privatization 1990-96","Budget revenue is annual flow in million złoty."
+1993,5924,992,380,2526,470,707,917,186,1082,99,527,0,780,S003,"Table 2, Poland: Privatization 1990-96","Budget revenue is annual flow in million złoty."
+1994,4955,1382,390,3010,484,945,1042,303,1245,134,723,0,1595,S003,"Table 2, Poland: Privatization 1990-96","Budget revenue is annual flow in million złoty."
+1995,4357,1610,228,3465,455,1054,1144,396,1358,160,958,321,2642,S003,"Table 2, Poland: Privatization 1990-96","NIF programme inclusion appears in the cumulative series; budget revenue is annual flow in million złoty."
+1996-01/1996-09,3993,1872,262,3770,305,1138,1280,518,1428,180,1049,512,3115,S003,"Table 2, Poland: Privatization 1990-96, Jan-Sep 1996 column","Nine-month period, not a full calendar year; budget revenue is annual-to-date flow in million złoty."
