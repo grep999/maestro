@@ -1,50 +1,34 @@
-# Task and Progress Model
+# Task, Flow and Progress Model
 
-Maestro tracks outcomes and evidence, not activity volume. A task is a bounded contribution to a project outcome with a known baseline, owner, reviewer, acceptance criteria and evidence requirements.
+Each project can have multiple independent workflows; all share one lifecycle and transition contract.
 
-## Task identity
+## Four distinct dimensions
 
-Each task carries: schema version, project ID, task ID, title, intended outcome, baseline reference, owner, reviewer, scope, exclusions, dependencies, acceptance criteria, required evidence, risk and state.
+- Stage: GROUNDING, MOMENTUM, MASTERY or REPETITION.
+- Role: Architect, Researcher, Builder, Independent Reviewer, Domain Specialist or Orchestrator.
+- Cycle: current pass through the lifecycle.
+- Objective progress: accumulated outcome progress from 0–100. It is updated during Repetition and cannot move backwards or reset between cycles.
+- Revision: optimistic-concurrency version. Stale writes are rejected.
 
-A baseline identifies the exact source of truth: a Git commit, document revision, artifact version or external record. Avoid mutable labels where an immutable identifier is available.
+## Work items and dependencies
 
-## States
+Work items are bounded pieces of stage work, not separate workflows. Each has an owner role, outcome, acceptance criteria, dependencies, status and evidence. Dependencies must be complete before dependent work starts. A stage cannot be exited while its work items remain incomplete.
 
-- INBOX — captured, not yet grounded.
-- GROUNDED — context and dependencies understood.
-- READY — selected and authorized to begin.
-- IN_PROGRESS — execution underway.
-- VERIFYING — candidate and evidence being checked.
-- REVIEW — independent challenge underway.
-- ACCEPTED — criteria met and integration accepted.
-- BLOCKED — progress requires an external decision or dependency.
-- REWORK — findings require correction.
-- DEFERRED — intentionally postponed.
-- REJECTED — outcome or approach declined.
-- SUPERSEDED — replaced by a newer authoritative task or candidate.
+## Stage gates
 
-State transitions are decisions, not decorative labels. Record actor, timestamp, reason and evidence for material transitions.
+| Stage | Exit gate |
+|---|---|
+| GROUNDING | Grounding Packet accepted; Grounding work items complete |
+| MOMENTUM | Candidate and Momentum Packet recorded; Momentum work items complete |
+| MASTERY | Independent verdict with evidence; FAIL returns to Momentum; BLOCKED pauses |
+| REPETITION | Learning packet with evidence; complete objective or increment cycle and return to Grounding |
 
-## Handoff contract
+## Specialist handoffs
 
-A handoff identifies project and task, role, status, baseline SHA, candidate SHA, summary, changed paths, checks with commands and outcomes, blockers, known risks, next action and creation time.
+A dispatch packet binds workflow ID, project ID, stage, workflow revision, role, capability, expected output and least-privilege boundary. Its lifecycle is PROPOSED → ACCEPTED → RUNNING → RETURNED. A returned handoff does not advance the workflow; the orchestrator reconciles it and invokes the stage gate. If stage or revision changes, the assignment is stale.
 
-PASS requires evidence for every required check, successful exit codes and no unresolved blockers. FAIL requires an observed failing condition. BLOCKED requires an explicit blocker. CONDITIONAL must state the exact conditions and limits.
+## Evidence
 
-## Evidence classes
+VERIFIED is reproduced or checked against an authoritative source. OBSERVED is directly seen but not independently reproduced. INFERRED is reasoned from facts. ASSUMED is provisional and requires confirmation. PLANNED is future work. BLOCKED requires a named condition.
 
-VERIFIED — directly reproduced or checked against an authoritative source.
-
-OBSERVED — directly seen, but not independently reproduced.
-
-INFERRED — reasoned from available facts; state the reasoning.
-
-ASSUMED — temporarily accepted premise requiring confirmation.
-
-PLANNED — intended future action, not completed work.
-
-BLOCKED — cannot proceed until a named condition is resolved.
-
-## Progress integrity
-
-A task is not complete because an agent says it is complete. Completion requires accepted outcome evidence. Skipped, cancelled, timed-out, inaccessible or missing checks are not PASS. A successful earlier candidate does not validate a later candidate. Reconcile state against the live source of truth before acting on events or handoffs.
+Skipped, timed-out, inaccessible or missing checks are not PASS. A successful earlier candidate does not validate a later candidate.
