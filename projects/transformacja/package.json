@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Historically grounded Polish economic-transition and corporate-control simulation",
   "scripts": {
-    "test": "node --test",
-    "check": "node --check src/simulation.js && node --check src/app.js && node --check src/historical.js"
+    "test": "node --test && python3 scripts/validate_atlas.py",
+    "check": "node --check src/simulation.js && node --check src/app.js && node --check src/historical.js",
+    "validate:atlas": "python3 scripts/validate_atlas.py"
   }
 }
