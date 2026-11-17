@@ -1,0 +1,15 @@
+{
+  "candidate_ref": "artifact://candidate-v1",
+  "outcome": "A coherent candidate has been produced and integrated",
+  "changed_artifacts": [
+    "artifact://candidate-v1"
+  ],
+  "checks": [
+    {
+      "name": "acceptance-smoke",
+      "outcome": "passed",
+      "required": true
+    }
+  ],
+  "risks": []
+}
