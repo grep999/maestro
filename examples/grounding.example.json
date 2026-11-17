@@ -1,0 +1,20 @@
+{
+  "purpose": "Deliver a verified outcome for the project",
+  "sources": [
+    "project://brief",
+    "project://current-state"
+  ],
+  "constraints": [
+    "time and budget limits"
+  ],
+  "dependencies": [],
+  "risks": [
+    "unverified assumptions"
+  ],
+  "acceptance": [
+    "outcome meets the agreed definition of done",
+    "evidence is recorded"
+  ],
+  "next_increment": "Produce the first coherent integrated candidate",
+  "baseline_ref": "project://baseline-v1"
+}
