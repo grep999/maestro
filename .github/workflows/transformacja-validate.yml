@@ -31,3 +31,5 @@ jobs:
         run: npm test
       - name: Check browser modules
         run: npm run check
+      - name: Build standalone offline browser app
+        run: npm run build
