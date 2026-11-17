@@ -38,7 +38,7 @@ Never infer a purchase price, stake, buyer, seller, employment effect or causal 
 
 ## Maestro integration
 
-The project is an adapter under `grep999/maestro/projects/transformacja`; Maestro's core lifecycle and engine remain at repository root. GitHub Copilot code review is configured as an independent review request on PR open/reopen/ready/synchronize events. Copilot must not author the candidate it reviews, self-approve, or advance Maestro workflow state.
+The project is an adapter under `grep999/maestro/projects/transformacja`; Maestro's core lifecycle and engine remain at repository root. GitHub Copilot code review is configured as an independent review request on PR open/reopen/ready/synchronize events. Copilot must not author the candidate it reviews, self-approve, or advance Maestro workflow state. The repository-level automation is installed on the default branch and requests reviews for pull requests and subsequent pushes.
 
 ## Known verification limitations
 
