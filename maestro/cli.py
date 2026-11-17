@@ -3,7 +3,9 @@ from pathlib import Path
 from .engine import Maestro, WorkflowError
 
 def packet(value):
-    p=Path(value); raw=p.read_text(encoding="utf-8") if p.exists() else value
+    p=Path(value)
+    try: raw=p.read_text(encoding="utf-8") if p.is_file() else value
+    except OSError: raw=value
     obj=json.loads(raw)
     if not isinstance(obj,dict): raise WorkflowError("packet must be a JSON object")
     return obj
