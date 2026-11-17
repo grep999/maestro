@@ -1,0 +1,41 @@
+name: Request GitHub Copilot review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  request-copilot-review:
+    name: Independent review by GitHub Copilot
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request Copilot code review
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.issue.number;
+            try {
+              const response = await github.request(
+                "POST /repos/{owner}/{repo}/pulls/{pull_number}/copilot-code-review",
+                { owner, repo, pull_number, headers: { "X-GitHub-Api-Version": "2026-03-10" } }
+              );
+              core.info(`Copilot review requested: ${response.status}`);
+            } catch (error) {
+              if (error.status === 409) {
+                core.info("A Copilot review is already pending for this pull request.");
+                return;
+              }
+              core.setFailed(
+                `Copilot review could not be requested (HTTP ${error.status ?? "unknown"}). ` +
+                "Confirm Copilot code review is enabled and available for this repository, " +
+                "and that the workflow token has pull-requests: write permission. " +
+                (error.message ?? "")
+              );
+            }
