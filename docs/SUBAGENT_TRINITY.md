@@ -1,9 +1,13 @@
-# Specialist Roles and Orchestration
+# Specialist Roles Inside the Maestro Workflow
 
-Maestro uses three specialist functions: Grounding, Momentum and Mastery. They are not a rigid org chart. The orchestrator assigns capabilities according to the work and may introduce additional domain specialists when justified.
+Maestro's lifecycle stages are Grounding, Momentum, Mastery and Repetition. Roles are capabilities assigned within those stages; they are not stages.
 
-Grounding establishes reality and context. Momentum executes the selected coherent increment. Mastery independently challenges the exact candidate. Repetition governs learning across the whole cycle; it is not a fourth agent.
+- Architect: structures systems, constraints, interfaces and dependencies; contributes during Grounding and Momentum.
+- Researcher: gathers and evaluates evidence; contributes primarily during Grounding and may support Momentum or Mastery.
+- Builder: creates and integrates the selected outcome during Momentum.
+- Independent Reviewer: challenges the exact candidate during Mastery, separate from its author.
+- Domain Specialist: supplies a bounded capability wherever needed.
 
-The orchestrator owns mission, priority, task graph, shared state, dispatch, integration, approval boundaries and recovery. A role prompt or agent definition is not proof of an independently running process. When roles are simulated sequentially in one model session, disclose that limitation and do not claim independent review.
+The orchestrator owns mission, shared state, priorities, task graph, dispatch, integration, approval boundaries and recovery. Repetition is a learning stage, not a fourth agent. A role prompt is not proof of a running independent process.
 
-Every dispatch carries bounded scope, source-of-truth references, expected output, evidence requirements, permissions, timeout/recovery policy and handoff schema. Every return is reconciled before state changes.
+Every dispatch carries project and workflow identity, stage, revision, bounded scope, expected output, source references, permission boundary and handoff contract. Returned work is reconciled against the live workflow before state transitions.
