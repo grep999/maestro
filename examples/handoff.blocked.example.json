@@ -1,20 +1,28 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project_id": "example-project",
-  "task_id": "EX-001",
-  "role": "momentum",
+  "task_id": "EX-014",
+  "role": "BUILDER",
+  "stage": "MOMENTUM",
   "status": "blocked",
   "base_sha": "0123456789abcdef0123456789abcdef01234567",
-  "candidate_sha": "89abcdef0123456789abcdef0123456789abcdef",
-  "summary": "Execution cannot proceed until the named dependency is available.",
+  "candidate_sha": "0123456789abcdef0123456789abcdef01234567",
+  "summary": "The repository could be inspected but no write-capable execution environment was available.",
   "changed_paths": [],
-  "checks": [],
+  "checks": [
+    {
+      "name": "source inventory",
+      "outcome": "passed",
+      "command": "python scripts/inventory.py",
+      "exit_code": 0
+    }
+  ],
   "blockers": [
-    "Awaiting access to the authoritative source"
+    "No authorized write workspace was provisioned."
   ],
   "known_risks": [
-    "Schedule impact"
+    "The inventory has not been independently reviewed."
   ],
-  "next_action": "Resolve access and re-ground the task.",
-  "created_at": "2026-11-17T00:00:00Z"
+  "next_action": "Provision an authorized workspace or keep the task read-only.",
+  "created_at": "2026-11-16T00:00:00Z"
 }
