@@ -1,0 +1,10 @@
+{
+  "export_version": "1.0",
+  "source": "local TRANSFORMACJA Maestro SQLite state, summarized before repository integration",
+  "note": "This is a status export. The original SQLite event log and revision history have not been copied.",
+  "workflows": [
+    {"id":"517d825e-94df-4219-a803-883630a8ab57","name":"Ownership transformation atlas","stage":"MASTERY","status":"BLOCKED","candidate":"4ea23bd7288726ba8ea0d5f985721c1b1c351f5f","blockers":["Independent review not yet completed","Browser visual and interaction QA not completed"]},
+    {"id":"790c7ddb-a5f6-4fa6-af99-2f6a8e46e1c9","name":"DCF valuation and acquisition finance","stage":"MASTERY","status":"BLOCKED","candidate":"77cc702b6afe902892fdcb556483fe8a1a2abee8","blockers":["Independent review not yet completed","Browser visual and interaction QA not completed"]},
+    {"id":"cc896923-68f3-45b3-8b6f-e798b916e342","name":"Verified transaction casebook","stage":"MASTERY","status":"BLOCKED","candidate":"f1e55a9b771d972efe70bef7cbd4e89892351666","blockers":["Independent review not yet completed","Browser visual and interaction QA not completed"]}
+  ]
+}
