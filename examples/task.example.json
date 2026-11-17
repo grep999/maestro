@@ -1,30 +1,37 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project_id": "example-project",
-  "task_id": "EX-001",
-  "title": "Deliver a verified coherent increment",
-  "outcome": "Produce an accepted outcome with reproducible evidence",
+  "task_id": "EX-014",
+  "title": "Prove the import boundary",
+  "outcome": "Import a representative project without changing its source of truth.",
   "baseline": {
-    "type": "document",
-    "ref": "docs/baseline.md"
+    "type": "git",
+    "ref": "main",
+    "sha": "0123456789abcdef0123456789abcdef01234567"
   },
-  "owner": "momentum",
-  "reviewer": "mastery",
+  "stage": "GROUNDING",
+  "owner": "ARCHITECT",
+  "reviewer": "INDEPENDENT_REVIEWER",
   "scope": [
-    "defined deliverables"
+    "inspect manifest and source tree",
+    "build a read-only inventory",
+    "produce a reproducible import report"
   ],
   "exclusions": [
-    "unapproved external actions"
+    "no source edits",
+    "no remote push"
   ],
   "dependencies": [],
   "acceptance": [
-    "All required criteria met",
-    "Evidence is current and reproducible"
+    "every discovered path is accounted for",
+    "unsupported files are reported",
+    "no write occurred in source repository"
   ],
   "evidence_required": [
-    "candidate reference",
-    "check results"
+    "inventory artifact",
+    "command transcript",
+    "exact source SHA"
   ],
-  "risk": "R1",
-  "state": "READY"
+  "risk": "R0",
+  "state": "GROUNDED"
 }
