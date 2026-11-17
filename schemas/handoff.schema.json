@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Maestro Handoff",
+  "title": "Maestro Specialist Handoff v2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -8,6 +8,7 @@
     "project_id",
     "task_id",
     "role",
+    "stage",
     "status",
     "base_sha",
     "candidate_sha",
@@ -21,7 +22,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "project_id": {
       "type": "string",
@@ -33,10 +34,20 @@
     },
     "role": {
       "enum": [
-        "grounding",
-        "momentum",
-        "mastery",
-        "orchestrator"
+        "ORCHESTRATOR",
+        "ARCHITECT",
+        "RESEARCHER",
+        "BUILDER",
+        "INDEPENDENT_REVIEWER",
+        "DOMAIN_SPECIALIST"
+      ]
+    },
+    "stage": {
+      "enum": [
+        "GROUNDING",
+        "MOMENTUM",
+        "MASTERY",
+        "REPETITION"
       ]
     },
     "status": {
@@ -57,7 +68,8 @@
     },
     "summary": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "maxLength": 4000
     },
     "changed_paths": {
       "type": "array",
@@ -85,11 +97,18 @@
               "not_run"
             ]
           },
+          "command": {
+            "type": "string"
+          },
           "exit_code": {
             "type": "integer"
+          },
+          "evidence_url": {
+            "type": "string",
+            "format": "uri"
           }
         },
-        "additionalProperties": true
+        "additionalProperties": false
       }
     },
     "blockers": {
