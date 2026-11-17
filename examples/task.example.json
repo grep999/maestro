@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "project_id": "example-project",
+  "task_id": "EX-001",
+  "title": "Deliver a verified coherent increment",
+  "outcome": "Produce an accepted outcome with reproducible evidence",
+  "baseline": {
+    "type": "document",
+    "ref": "docs/baseline.md"
+  },
+  "owner": "momentum",
+  "reviewer": "mastery",
+  "scope": [
+    "defined deliverables"
+  ],
+  "exclusions": [
+    "unapproved external actions"
+  ],
+  "dependencies": [],
+  "acceptance": [
+    "All required criteria met",
+    "Evidence is current and reproducible"
+  ],
+  "evidence_required": [
+    "candidate reference",
+    "check results"
+  ],
+  "risk": "R1",
+  "state": "READY"
+}
