@@ -1,0 +1,15 @@
+{
+  "expected_vs_actual": "The delivered candidate met the expected outcome",
+  "lessons": [
+    "The selected increment was appropriately scoped"
+  ],
+  "state_updates": [
+    "Record candidate-v1 as the current verified baseline"
+  ],
+  "next_decision": "Ground the next coherent increment",
+  "evidence": [
+    "outcome://verified"
+  ],
+  "progress": 35,
+  "objective_complete": false
+}
