@@ -1,52 +1,40 @@
 # Maestro Implementation Roadmap
 
-This roadmap builds an operational orchestrator without tying it to a specific project domain.
+Maestro is built as a project-agnostic orchestrator. Its core lifecycle is invariant; project adapters supply domain context without redefining progression.
 
-## Stage 1 — Reliable operating contract
+## v0.2 — Operational local core
 
-- Constitution, pillars, task and handoff schemas.
-- Evidence vocabulary and explicit state transitions.
-- Project adapter boundary and least-privilege policy.
-- Local contract validator and representative examples.
+Implemented:
+- Four-stage lifecycle with guarded Grounding, Momentum, Mastery and Repetition transitions.
+- SQLite persistence, append-only event history and optimistic revision checks.
+- Stage-scoped work items and dependency gates.
+- Separate cycle and monotonic objective progress.
+- Specialist assignment and return packets with stale-dispatch detection.
+- CLI, JSON schemas, examples and regression tests.
+- GitHub Actions validation for contracts, tests and compilation.
 
-Exit: contracts validate; empty project registry is supported.
+## v0.3 — Execution adapters
 
-## Stage 2 — Durable state and orchestration
+- Adapter protocol for GitHub, documents, research and external project systems.
+- Capability discovery and permission-scoped dispatch.
+- Durable run records, retries, idempotency and cancellation.
+- Execution telemetry and observable handoff state.
+- Independent reviewer isolation and conflict-of-interest rules.
 
-- Persistent project registry, task graph, decisions, events and evidence references.
-- Event deduplication and reconciliation against canonical sources.
-- Deterministic state transitions and audit trail.
-- Recovery from interrupted or duplicated runs.
+## v0.4 — Orchestration intelligence
 
-Exit: a workflow can resume after interruption without inventing progress.
+- Dynamic role composition based on task requirements and evidence gaps.
+- Cross-workflow dependency graph and portfolio-level prioritization.
+- Recovery plans for stale sources, interrupted work and unavailable tools.
+- Forecast versus outcome calibration and risk learning.
 
-## Stage 3 — Specialist dispatch
+## v0.5 — Service operation
 
-- Dynamic role assignment based on work type and required capability.
-- Grounding, Momentum and Mastery packet interfaces.
-- Explicit capability, tool and permission boundaries.
-- Independent-review separation and conflict-of-interest handling.
+- API service and authenticated clients.
+- Multi-user ownership, access control and audit export.
+- Backups, migrations, observability and operational runbooks.
+- Deterministic release process and compatibility guarantees.
 
-Exit: work can be delegated and handed back with traceable evidence; no false claim of independent agents where only sequential model calls exist.
+## Release discipline
 
-## Stage 4 — Adapters and integrations
-
-- Generic adapter interface.
-- GitHub adapter as one optional implementation.
-- Document, research, project-management and other adapters behind the same contract.
-- Idempotent event processing, scoped credentials and safe defaults.
-
-Exit: multiple unrelated project types can be managed without changing Maestro's core.
-
-## Stage 5 — Learning and operations
-
-- Outcome versus forecast analysis.
-- Estimate, risk and dependency calibration.
-- Failure clustering and root-cause workflow.
-- Observability, health checks, backups and operational runbooks.
-
-Exit: the system improves decisions across cycles and can be operated reliably.
-
-## Release principle
-
-Do not declare a stage complete from documentation alone. Each exit criterion needs reproducible evidence. Keep deterministic CI checks separate from contextual specialist judgment. External actions remain approval-gated.
+A stage is complete only when exit criteria have reproducible evidence. A configured workflow is not a successful run. A role prompt is not an independent agent process. External publication, spending, submissions, sending, merging, deployment and destructive actions remain approval-gated.
