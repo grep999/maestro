@@ -1,31 +1,29 @@
-# The Four Pillars
+# The Four Pillars as One Workflow
 
-The pillars are governing functions of one coherent workflow, not four departments that must exist in every project.
+These are four stages of one continuous lifecycle, not four departments or parallel mini-workflows.
 
-## Grounding — know what is real
+## Grounding — establish reality and choose
 
-Build a compact, source-backed model of the whole. Establish intent, stakeholders, canonical sources, current state, constraints, dependencies, uncertainty, risks and success conditions. Preserve contradictions rather than silently resolving them. Deliver a Grounding Packet that explains what matters and why.
+Establish purpose, stakeholders, canonical sources, current state, constraints, dependencies, uncertainty, risks and acceptance criteria. Preserve contradictions. Choose the next coherent increment. Exit with an accepted Grounding Packet.
 
-## Momentum — move the whole forward
+## Momentum — execute and integrate
 
-Choose one coherent increment with meaningful leverage. Confirm ownership, scope, exclusions, dependencies, permissions and acceptance criteria. Deliver an integrated candidate and a Momentum Packet containing changed artifacts, exact identifiers, checks actually run, outcomes, assumptions and remaining risks. Do not atomize work merely to create activity.
+Momentum is the delivery stage. It coordinates the required specialists and turns the selected increment into an integrated candidate. Building, creation, operations and integration happen here. Record exact candidate identity, outcome, changed artifacts, checks and residual risks. Momentum is not a specialist role, agent or free-floating productivity metric.
 
-## Mastery — challenge the candidate
+## Mastery — independently challenge
 
-Review the exact candidate independently from its author. Re-fetch the relevant source of truth, reproduce checks where possible, inspect realistic failure modes and compare evidence with acceptance criteria. Return PASS, FAIL, BLOCKED or CONDITIONAL with findings, severity, evidence, limitations and precise next action. A model's self-approval is not independent review.
+Review the exact candidate independently from its author. Re-fetch sources, reproduce checks and compare the candidate with acceptance criteria. Return PASS, FAIL, BLOCKED or CONDITIONAL with evidence. FAIL returns the same workflow to Momentum; BLOCKED pauses it without erasing stage or context.
 
-## Repetition — compound learning
+## Repetition — learn and progress
 
-Compare expected and actual outcomes. Identify what changed in the world and in the model. Update project context, task dependencies, risk, estimates, acceptance standards and roadmap. Choose the next cycle from the revised reality. Never retry blindly; after two failures against the same hypothesis, investigate before proceeding.
+Compare intended and actual outcomes. Update durable state, dependencies, risk, estimates and the project model. Record accumulated objective progress. Complete the objective or increment the cycle and return to Grounding. Repetition is the learning stage and regenerative principle, not another worker.
 
-## The handoffs
+## Handoffs
 
-Grounding → Momentum: accepted Grounding Packet and chosen increment.
+Grounding → Momentum: accepted Grounding Packet and selected increment.
 
-Momentum → Mastery: exact candidate identity, changed paths, acceptance criteria and raw evidence.
+Momentum → Mastery: exact candidate, changed artifacts, checks, acceptance criteria and risks.
 
-Mastery → Integration: explicit verdict and findings.
+Mastery → Repetition: explicit verdict and independent evidence. FAIL routes back to Momentum; BLOCKED pauses.
 
-Integration → Repetition: accepted/rejected outcome, residual risks and durable evidence.
-
-Repetition → Grounding: updated model and next decision.
+Repetition → Grounding: learning, updated state, next decision and incremented cycle.
