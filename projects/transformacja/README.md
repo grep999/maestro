@@ -1,25 +1,45 @@
-# TRANSFORMACJA — project adapter
+# TRANSFORMACJA
 
-**Adapter status:** ACTIVE / integration in progress  
-**Project source:** `grep999/maestro`, branch `working`, path `projects/transformacja/`  
-**Local candidate at integration time:** `cdb4e352558ce0308e313aeddb7fd1c272e85d07`
+A historically grounded corporate-control and economic-transition simulation beginning in Poland in 1990.
 
-TRANSFORMACJA is a historically grounded, playable simulation of Poland's economic transformation beginning in 1990. Its purpose is to model corporate control, privatization routes, finance, productive capacity, labour, consumers, competition, regional effects, and domestic/foreign capital flows without assuming a predetermined verdict.
+## Current baseline — 0.4.0 mechanics prototype + historical atlas 0.1.0
 
-## Source-of-truth boundary
-This directory is the project's integration home in the Maestro repository. The project-specific source, data, tests, docs, build output, and workflow state belong here. Maestro's own engine and canonical workflow remain at repository root and are not replaced by this adapter.
+This project directory contains a dependency-free JavaScript simulation kernel, browser interface, historical research data, and regression/provenance checks.
 
-## Current baseline (reported from local candidate)
-- Prototype version: 0.4.0.
-- Dependency-free browser simulation and standalone HTML build.
-- Five company-level transaction events with source provenance; official aggregate series and research leads are separate.
-- DCF-based indicative valuation and seller negotiation mechanics are scenario mechanics, not historical valuations.
-- Last local verification: 25 tests passed; `npm run check`, `npm run build`, Maestro packet validation, atlas validation, and `git diff --check` passed.
-- Browser-driven interaction QA was not completed; Chromium headless timed out.
-- Three Maestro workflows remain blocked at MASTERY pending independent review and browser QA.
+- Acquire 25%, 51% or 100% stakes in fictional local businesses.
+- Estimate equity value with an explicit five-year DCF proxy and negotiate offers against seller reserve prices.
+- Finance purchases with cash and up to 60% illustrative debt.
+- Simulate monthly sales, operating costs, payroll, interest, tax, working capital and cash.
+- Change price and wage policies; reinvest in productivity and quality.
+- Restructure employment with severance and local social consequences.
+- Inspect market shares and HHI.
+- Browse sourced GUS privatization aggregates and the IMF 1990–September 1996 route series.
+- Inspect five source-backed company transactions and eleven research leads with explicit verification status.
+- Convert old złoty to new złoty in 1995 at 10,000:1.
+- Save/load locally with model-version validation.
 
-## Required review posture
-Use the `maestro-independent-code-review` skill for review. Copilot is an independent reviewer capability; it must not author the candidate it reviews, self-approve, or advance Maestro workflow state. Findings must be evidence-backed and verdicts must be PASS, CONDITIONAL, FAIL, or BLOCKED.
+This is a playable mechanics prototype, **not yet a historically calibrated simulation**. Initial companies and numerical parameters are fictional/stylized. Historical case records are not purchasable. DCF assumptions are scenario mechanics, not observed historical valuations.
 
-## Integration note
-This adapter is committed before the full local project source transfer. It does not claim that the complete TRANSFORMACJA codebase has been pushed or reviewed.
+## Run
+
+From this directory:
+
+```bash
+npm test
+npm run check
+python3 scripts/validate_atlas.py
+```
+
+Serve `prototype/` with a static HTTP server and open `prototype/index.html`. It imports `src/app.js` and `src/simulation.js` as browser ES modules.
+
+## Research integrity
+
+Never infer a purchase price, stake, buyer, seller, employment effect or causal outcome from brand ownership alone. Every factual transaction must have a date with explicit precision, transaction type, parties, scope, source locator, confidence and uncertainty notes. Distinguish direct acquisition from greenfield investment, indirect control, asset sale, liquidation and later ownership change. Preserve unknown values as null.
+
+## Maestro integration
+
+The project is an adapter under `grep999/maestro/projects/transformacja`; Maestro's core lifecycle and engine remain at repository root. GitHub Copilot code review is configured as an independent review request on PR open/reopen/ready/synchronize events. Copilot must not author the candidate it reviews, self-approve, or advance Maestro workflow state.
+
+## Known verification limitations
+
+The local candidate's last reported run passed 25 tests and syntax/build/provenance checks. Browser-driven interaction QA was not completed (headless Chromium timed out). The current GitHub integration is being assembled file-by-file; do not treat this README as proof that every local project artifact or the local SQLite workflow database has been transferred.
