@@ -216,6 +216,8 @@ class Maestro:
     def add_work_item(self,wid,rev,title,outcome,owner_role,acceptance,dependencies=None):
         role=owner_role.upper(); deps=dependencies or []
         if role not in ROLES or not title.strip() or not outcome.strip() or not acceptance: raise WorkflowError("invalid work item")
+        if not isinstance(deps,list) or not isinstance(acceptance,list): raise WorkflowError("dependencies and acceptance must be lists")
+        if any(not isinstance(x,str) or not x.strip() for x in deps+acceptance): raise WorkflowError("work-item values must be non-empty strings")
         w=self.get(wid)
         if w["status"]!="ACTIVE": raise WorkflowError("workflow is not active")
         allowed={"ARCHITECT":{"GROUNDING","MOMENTUM"},"RESEARCHER":{"GROUNDING","MOMENTUM","MASTERY"},
@@ -280,6 +282,7 @@ class Maestro:
         return aid
 
     def assignment_transition(self,aid,status,result=None):
+        status=status.upper()
         transitions={"PROPOSED":{"ACCEPTED","CANCELLED"},"ACCEPTED":{"RUNNING","CANCELLED"},"RUNNING":{"RETURNED"}}
         with self._db() as db:
             db.execute("BEGIN IMMEDIATE")
@@ -288,7 +291,7 @@ class Maestro:
             w=db.execute("SELECT * FROM workflows WHERE id=?",(a["workflow_id"],)).fetchone(); p=json.loads(a["packet"])
             if w["stage"]!=a["stage"] or w["status"]!="ACTIVE" or w["revision"]!=p["workflow_revision"]: raise WorkflowError("stale assignment")
             if status=="RETURNED":
-                if not result or not result.get("summary") or "evidence" not in result: raise WorkflowError("return requires summary and evidence")
+                if not result or not result.get("summary") or not isinstance(result.get("evidence"),list): raise WorkflowError("return requires summary and evidence list")
                 p["result"]=result
             stamp=_now(); db.execute("UPDATE assignments SET status=?,packet=?,updated_at=? WHERE id=?",(status,_dump(p),stamp,aid))
             self._event(db,a["workflow_id"],w["revision"],"ASSIGNMENT_"+status,a["stage"],a["stage"],"orchestrator",{"id":aid})
