@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project_id": "example-project",
+  "task_id": "EX-001",
+  "role": "momentum",
+  "status": "blocked",
+  "base_sha": "0123456789abcdef0123456789abcdef01234567",
+  "candidate_sha": "89abcdef0123456789abcdef0123456789abcdef",
+  "summary": "Execution cannot proceed until the named dependency is available.",
+  "changed_paths": [],
+  "checks": [],
+  "blockers": [
+    "Awaiting access to the authoritative source"
+  ],
+  "known_risks": [
+    "Schedule impact"
+  ],
+  "next_action": "Resolve access and re-ground the task.",
+  "created_at": "2026-11-17T00:00:00Z"
+}
