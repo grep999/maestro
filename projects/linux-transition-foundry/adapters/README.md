@@ -53,3 +53,5 @@ The JSON catalogue is a reviewed candidate catalogue. automation_status=candidat
 ## Read-only runtime discovery
 
 `tools/discover-linux-runtime.py --profile PROFILE_ID` gathers runtime facts and validates the selected profile against distro ID, curated version, architecture, APT availability and PID 1. `/etc/os-release` is parsed as data; it is never sourced. The collector does not invoke APT or service commands and makes no changes. Unknown facts, unsupported versions, architectures or init systems block the report. Even a metadata-compatible result does not establish hardware compatibility or grant permission to mutate the endpoint.
+
+- freedesktop.org `os-release` specification: https://www.freedesktop.org/software/systemd/man/latest/os-release.html (`ID` and `VERSION_ID` are machine-readable identifiers; unknown fields must be ignored). The collector parses these assignments as data rather than sourcing shell content.
