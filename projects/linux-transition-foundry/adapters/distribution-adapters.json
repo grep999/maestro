@@ -15,7 +15,13 @@
       "package_manager": "apt",
       "service_manager": "systemd",
       "desktop": "GNOME",
-      "automation_status": "candidate_only"
+      "automation_status": "candidate_only",
+      "arch": [
+        "x64"
+      ],
+      "supported_versions": [
+        "26.04"
+      ]
     },
     "xubuntu": {
       "family": "debian",
@@ -23,7 +29,13 @@
       "package_manager": "apt",
       "service_manager": "systemd",
       "desktop": "Xfce",
-      "automation_status": "candidate_only"
+      "automation_status": "candidate_only",
+      "arch": [
+        "x64"
+      ],
+      "supported_versions": [
+        "26.04"
+      ]
     },
     "lubuntu": {
       "family": "debian",
@@ -31,7 +43,13 @@
       "package_manager": "apt",
       "service_manager": "systemd",
       "desktop": "LXQt",
-      "automation_status": "candidate_only"
+      "automation_status": "candidate_only",
+      "arch": [
+        "x64"
+      ],
+      "supported_versions": [
+        "26.04"
+      ]
     },
     "mint-xfce": {
       "family": "debian",
@@ -39,7 +57,13 @@
       "package_manager": "apt",
       "service_manager": "systemd",
       "desktop": "Xfce",
-      "automation_status": "candidate_only"
+      "automation_status": "candidate_only",
+      "arch": [
+        "x64"
+      ],
+      "supported_versions": [
+        "22.3"
+      ]
     },
     "mx-xfce": {
       "family": "debian",
@@ -51,6 +75,12 @@
       "observed_init_options": [
         "systemd",
         "sysvinit"
+      ],
+      "arch": [
+        "x64"
+      ],
+      "supported_versions": [
+        "25"
       ]
     },
     "debian-lxqt": {
@@ -59,7 +89,13 @@
       "package_manager": "apt",
       "service_manager": "runtime_detect",
       "desktop": "LXQt",
-      "automation_status": "candidate_only"
+      "automation_status": "candidate_only",
+      "arch": [
+        "x64"
+      ],
+      "supported_versions": [
+        "13"
+      ]
     },
     "antix": {
       "family": "debian",
@@ -74,6 +110,13 @@
         "dinit",
         "s6-rc",
         "s6-66"
+      ],
+      "arch": [
+        "x64",
+        "x86"
+      ],
+      "supported_versions": [
+        "26.1"
       ]
     }
   },
