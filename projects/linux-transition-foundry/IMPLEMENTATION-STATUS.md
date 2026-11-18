@@ -1,8 +1,8 @@
 # Implementation status — Linux baseline, migration and distro selection
 
 ## Delivered
-- Windows inventory helper, including processor data width for architecture screening.
-- Hardware-aware Linux distribution recommender based on RAM and CPU architecture.
+- Windows inventory helper, including WMI processor architecture code and data width for conservative x86/x64 screening.
+- Hardware-aware Linux distribution recommender based on RAM and CPU architecture; unknown and non-x86 architectures fail closed with no recommendation.
 - Curated profiles: Ubuntu Desktop 26.04 LTS, Linux Mint 22.3 Xfce, Xubuntu 26.04 LTS, Lubuntu 26.04 LTS, MX Linux 25 Xfce, Debian 13 LXQt and antiX 26.1.
 - Windows user-data backup prototype with SHA-256 manifest.
 - Linux restore utility with manifest verification, dry-run default, path/symlink safety, collision skipping and no source deletion.
@@ -19,8 +19,8 @@ Ubuntu GNOME remains the standard candidate for capable PCs. Xfce/LXQt distribut
 - Copilot review request failed with HTTP 422 due to licence/policy eligibility; no independent Copilot review was completed.
 
 ## Validation still pending for this increment
-- Distro recommender tests on CI.
-- Windows inventory output against real Windows systems.
+- Distro recommender tests on CI after architecture hardening.
+- Windows inventory output against real Windows systems, including ARM64 and legacy WMI variants.
 - Windows-to-Linux end-to-end backup/restore round trip.
 - Disposable VM/live-boot tests for every curated distro.
 - CPU instruction-set, GPU, Wi-Fi, Bluetooth, suspend, printing and encryption compatibility.
