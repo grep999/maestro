@@ -11,20 +11,15 @@ Small organisations (10–50 endpoints) with browser, email, documents, file sha
 ## Delivery model
 1. Paid readiness assessment.
 2. Verified data backup and workflow/application disposition.
-3. Fixed-scope Ubuntu pilot.
+3. Hardware-matched Linux distribution pilot.
 4. Department-by-department migration.
 5. Managed Linux operations and reusable tooling.
 
-## Non-negotiable principles
-- Evidence before recommendation; no assumed compatibility.
-- No big-bang migrations.
-- No device wipe before verified backup, acceptance and rollback readiness.
-- Preserve required business workflows, not ideological OS purity.
-- Least privilege, privacy by design and customer-approved discovery.
-- Every deployment is reproducible, documented and recoverable.
+## Flexible distribution support
+Ubuntu Desktop remains the standard profile for capable PCs, but older hardware can be matched to Linux Mint Xfce, Xubuntu, Lubuntu, MX Linux Xfce, Debian LXQt or antiX. A hardware-aware recommender screens RAM and CPU architecture. See DISTRIBUTION-MATRIX.md. It recommends candidates only; live hardware and workflow validation remain mandatory.
 
 ## Migration utility
-The prototype in tools/ performs a selected-folder Windows backup with SHA-256 manifest and a verified, dry-run-first Ubuntu restore into a new directory. It never deletes source data or overwrites existing files. See tools/README.md and MIGRATION-SAFETY.md. It is not an OS installer or a complete application/profile migration product.
+The prototype in tools/ performs selected-folder Windows backup with a SHA-256 manifest and a verified, dry-run-first Ubuntu/Linux restore into a new directory. It never deletes source data or overwrites existing files. It is not an OS installer or complete application/profile migration product.
 
 ## Project status
-Reference-design and prototype phase. No customer environment has been migrated. Backup/restore tools still require disposable-VM testing, Windows-specific validation and independent security review before pilot use.
+Reference-design and prototype phase. No customer environment has been migrated. Backup/restore and distribution profiles require disposable-VM and hardware testing before pilot use.
