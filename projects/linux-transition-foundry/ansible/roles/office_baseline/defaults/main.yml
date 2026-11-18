@@ -13,6 +13,5 @@ baseline_common_packages:
   - apparmor-utils
 baseline_office_packages:
   - libreoffice
-  - evince
   - remmina
 baseline_ufw_allowed_tcp_ports: []
