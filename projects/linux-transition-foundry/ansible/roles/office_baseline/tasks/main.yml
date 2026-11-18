@@ -19,12 +19,11 @@
   when: baseline_office_profile | bool
   tags: [packages, office]
 
-- name: Ensure AppArmor service is enabled where available
+- name: Ensure AppArmor service is enabled
   ansible.builtin.service:
     name: apparmor
     enabled: true
     state: started
-  failed_when: false
   tags: [security]
 
 - name: Configure unattended upgrades
@@ -44,7 +43,6 @@
     enabled: true
     state: started
   when: baseline_enable_unattended_upgrades | bool
-  failed_when: false
   tags: [updates]
 
 - name: Configure UFW default deny incoming
