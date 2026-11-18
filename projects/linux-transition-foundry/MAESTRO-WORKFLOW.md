@@ -23,7 +23,7 @@ GROUNDING → MOMENTUM → MASTERY → REPETITION → GROUNDING
 
 ## Selected next increment
 
-Define an explicit adapter contract separating distro-independent migration intent from distribution-specific package and service operations. The first increment is metadata and safety contract only. It does not execute package or service changes.
+The adapter metadata and fail-closed policy are implemented. The next Momentum increment adds a read-only runtime discovery tool that parses distro identity/version, CPU architecture, APT availability and actual PID 1. It produces a compatibility report only; no package or service operations are executed.
 
 ## Acceptance
 
