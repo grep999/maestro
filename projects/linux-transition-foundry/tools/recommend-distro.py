@@ -14,6 +14,42 @@ PROFILES = {
     "antix": {"name":"antiX 26.1 Full", "desktop":"IceWM / window managers", "ram_min_gb":0.5, "ram_comfort_gb":1, "arch":["x64","x86"], "tier":"legacy", "url":"https://antixlinux.com/download/"},
 }
 
+def detect_architecture(cpu, computer, os_data):
+    """Return x64, x86, or unknown; never infer x86 from a 32-bit Windows install."""
+    raw_arch = cpu.get("Architecture")
+    try:
+        arch_code = int(raw_arch)
+    except (TypeError, ValueError):
+        arch_code = None
+    # Win32_Processor Architecture: 0 = x86, 9 = x64. Other values are not supported here.
+    if arch_code == 9:
+        return "x64"
+    if arch_code == 0:
+        return "x86"
+    if arch_code is not None:
+        return "unknown"
+
+    name = str(cpu.get("Name") or "").lower()
+    vendor_is_x86 = any(token in name for token in ("intel", "amd"))
+    if vendor_is_x86:
+        try:
+            width = int(cpu.get("DataWidth") or 0)
+        except (TypeError, ValueError):
+            width = 0
+        if width == 64:
+            return "x64"
+        if width == 32:
+            return "x86"
+
+    hints = " ".join(str(value or "") for value in (
+        computer.get("SystemType"), os_data.get("OSArchitecture")
+    )).lower()
+    if "arm" in hints or "aarch" in hints:
+        return "unknown"
+    if "x64" in hints or "amd64" in hints or "x86-based pc" in hints:
+        return "x64" if "64" in hints or "x64" in hints or "amd64" in hints else "x86"
+    return "unknown"
+
 def read_inventory(path):
     data = json.loads(Path(path).read_text(encoding="utf-8-sig"))
     computer = data.get("computer") or {}
@@ -28,17 +64,12 @@ def read_inventory(path):
     if not ram:
         raise ValueError("Inventory has no usable physical RAM value.")
     cpu = processors[0] if processors and isinstance(processors[0], dict) else {}
-    arch_text = str(os_data.get("OSArchitecture") or computer.get("SystemType") or "").lower()
-    try:
-        data_width = int(cpu.get("DataWidth") or 0)
-    except (TypeError, ValueError):
-        data_width = 0
-    # CPU capability wins over the bitness of the currently installed Windows OS.
-    arch = "x64" if data_width == 64 or "x64" in arch_text or "64" in arch_text else "x86"
-    return round(int(ram) / (1024 ** 3), 2), arch
+    return round(int(ram) / (1024 ** 3), 2), detect_architecture(cpu, computer, os_data)
 
 def recommend(ram_gb, arch):
-    if arch == "x86":
+    if arch == "unknown":
+        choices = []
+    elif arch == "x86":
         choices = ["antix"] if ram_gb >= 0.5 else []
     elif ram_gb >= 6:
         choices = ["ubuntu-desktop", "mint-xfce", "xubuntu"]
@@ -62,7 +93,7 @@ def main():
     choices = recommend(ram, arch)
     result = {"detected_ram_gb":ram, "architecture":arch, "recommendations":choices,
       "decision_note":"Hardware screening only. Boot each candidate in live mode and test Wi-Fi, graphics, suspend, audio, printers, encryption and required applications before choosing. These are recommendations, not compatibility guarantees.",
-      "limitations":["Does not download ISOs or install an operating system.","Does not assess CPU instruction-set compatibility, GPU driver quality, Wi-Fi firmware or application compatibility.","Very low RAM may make modern browsers and office web apps impractical even when a distro boots."]}
+      "limitations":["Does not download ISOs or install an operating system.","Does not assess CPU instruction-set compatibility, GPU driver quality, Wi-Fi firmware or application compatibility.","Unknown or non-x86 CPU architectures receive no recommendation; add a reviewed architecture profile before supporting them.","Very low RAM may make modern browsers and office web apps impractical even when a distro boots."]}
     print(json.dumps(result, indent=2))
     return 0 if choices else 2
 
