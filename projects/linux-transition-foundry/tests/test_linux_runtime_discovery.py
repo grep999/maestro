@@ -42,7 +42,7 @@ class RuntimeDiscoveryTests(unittest.TestCase):
         self.assertIn("unsupported_service_manager", discovery.validate_profile("antix", facts))
 
     def test_ambiguous_s6_pid1_is_not_guessed(self):
-        self.assertEqual(discovery.detect_pid1(self._pid_file("s6-svscan\\n")), "s6-unknown")
+        self.assertEqual(discovery.detect_pid1(self._pid_file("s6-svscan\n")), "s6-unknown")
 
     def _pid_file(self, content):
         tmp = tempfile.TemporaryDirectory()
