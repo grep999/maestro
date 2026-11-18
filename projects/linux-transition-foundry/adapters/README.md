@@ -49,3 +49,7 @@ The JSON catalogue is a reviewed candidate catalogue. automation_status=candidat
 - Debian init reference: https://wiki.debian.org/Init (runtime init detection guidance and alternative init support).
 - Ubuntu package management: https://ubuntu.com/server/docs/how-to/software/package-management/ (APT package management).
 - Linux Mint release catalogue: https://www.linuxmint.com/download_all.php (22.3 Ubuntu Noble package base).
+
+## Read-only runtime discovery
+
+`tools/discover-linux-runtime.py --profile PROFILE_ID` gathers runtime facts and validates the selected profile against distro ID, curated version, architecture, APT availability and PID 1. `/etc/os-release` is parsed as data; it is never sourced. The collector does not invoke APT or service commands and makes no changes. Unknown facts, unsupported versions, architectures or init systems block the report. Even a metadata-compatible result does not establish hardware compatibility or grant permission to mutate the endpoint.
