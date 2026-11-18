@@ -1,45 +1,31 @@
-# Implementation status — Linux baseline and migration prototype
+# Implementation status — Linux baseline, migration and distro selection
 
 ## Delivered
-- Ubuntu 26.04 LTS primary candidate; 24.04 LTS compatibility fallback.
-- Conservative Ansible workstation baseline with package allowlists and firewall opt-in.
-- Windows inventory helper.
-- Windows user-data backup prototype: Desktop, Documents, Pictures, Music, Videos, Favorites; Downloads is opt-in.
-- SHA-256 manifest with relative paths, sizes and source metadata.
-- Ubuntu restore utility: manifest verification, dry-run default, safe relative paths, symlink/path-escape rejection, checksum verification, no overwrite, no source deletion.
-- Migration safety contract and initial restore safety tests.
-- GitHub Actions workflow for Python tests and Ansible syntax checks.
+- Windows inventory helper, including processor data width for architecture screening.
+- Hardware-aware Linux distribution recommender based on RAM and CPU architecture.
+- Curated profiles: Ubuntu Desktop 26.04 LTS, Linux Mint 22.3 Xfce, Xubuntu 26.04 LTS, Lubuntu 26.04 LTS, MX Linux 25 Xfce, Debian 13 LXQt and antiX 26.1.
+- Windows user-data backup prototype with SHA-256 manifest.
+- Linux restore utility with manifest verification, dry-run default, path/symlink safety, collision skipping and no source deletion.
+- Distribution matrix, safety contract and unit tests.
+- Existing Ansible baseline remains Ubuntu-specific; cross-distribution configuration roles are not yet implemented.
 
-## CI evidence — 18 November 2026
-- Python unittest discovery: **10 tests passed** (5 baseline safety tests and 5 migration restore tests).
-- Ansible collection dependency installation: passed.
-- Ansible playbook syntax check: passed.
-- Maestro validation workflow: passed.
-- GitHub Copilot review request: **not completed**. The workflow received HTTP 422 because the actor does not have a Copilot licence that includes code review, or code review is disabled by organisation policy. This is not an independent code review.
+## Selection policy
+Ubuntu GNOME remains the standard candidate for capable PCs. Xfce/LXQt distributions target lower-resource systems; antiX is a legacy exception for very old or 32-bit hardware. RAM thresholds are conservative office-workload policy thresholds, not vendor installer minima. The recommender screens only RAM and architecture; it cannot guarantee driver, application or peripheral compatibility.
 
-These checks validate Python restore logic and Ansible syntax only. They do not validate PowerShell execution, real Windows backups, actual Ubuntu restore on hardware, application compatibility, encryption or rollback.
+## CI evidence from previous increment
+- Python unittest discovery: 10/10 passed.
+- Ansible collection installation and playbook syntax check: passed.
+- Maestro validation: passed.
+- Copilot review request failed with HTTP 422 due to licence/policy eligibility; no independent Copilot review was completed.
 
-## Remaining evidence gaps
-
-| Check | Status |
-|---|---|
-| Windows PowerShell backup execution | NOT RUN |
-| Windows backup/restore round trip | NOT RUN |
-| Disposable Windows and Ubuntu VM tests | NOT RUN |
-| Interrupted-copy and large-file tests | NOT RUN |
-| OneDrive/cloud placeholder tests | NOT RUN |
-| Encryption and recovery rehearsal | NOT RUN |
-| Independent security review | NOT DONE |
-| Customer pilot | NOT STARTED |
-
-Do not interpret authored tests as a production certification. The migration utility is a prototype and must not be used to authorise disk erasure or a production migration.
-
-## Next validation gate
-1. Test Windows backup on a disposable Windows VM with synthetic files, Unicode names, long paths, empty folders, locked files and junctions.
-2. Restore to a disposable Ubuntu VM; verify hashes and collision handling.
-3. Test interrupted backup recovery, large datasets and cloud-sync placeholders.
-4. Review encryption, retention, EFS and application-specific export procedures.
-5. Obtain an independent security review and rehearse rollback before pilot.
+## Validation still pending for this increment
+- Distro recommender tests on CI.
+- Windows inventory output against real Windows systems.
+- Windows-to-Linux end-to-end backup/restore round trip.
+- Disposable VM/live-boot tests for every curated distro.
+- CPU instruction-set, GPU, Wi-Fi, Bluetooth, suspend, printing and encryption compatibility.
+- Cross-distro Ansible roles and package/service maps.
+- Independent security review and customer pilot.
 
 ## Release gate
-Production readiness requires successful end-to-end evidence, a tested backup/restore and rollback process, hardware/application compatibility, user acceptance and independent security review.
+No production migration until backup integrity, rollback, distro support lifecycle, hardware and application acceptance are demonstrated on the target device. Do not treat a RAM-based recommendation as proof of compatibility.
