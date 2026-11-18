@@ -1,34 +1,30 @@
 # Linux Transition Foundry
 
-A Maestro-managed project to establish a repeatable, evidence-led service for moving Windows-dependent organisations toward managed Linux ecosystems.
+A Maestro-managed project to move Windows-dependent users and organisations toward managed Linux while preserving their data and workflows.
 
 ## Product promise
-
-Reduce avoidable IT cost and vendor dependency while preserving business workflows, security, supportability and user productivity. We migrate workflows, not just operating systems.
+Reduce avoidable IT cost and vendor dependency without sacrificing continuity, security, supportability or user productivity. We migrate workflows, not just operating systems.
 
 ## Initial wedge
-
-Small organisations (initially 10–50 endpoints) with predominantly browser, email, document, file-share and standard office workflows. Specialist Windows-only workloads remain supported exceptions until a validated replacement exists.
+Small organisations (10–50 endpoints) with browser, email, documents, file shares and standard office workflows. Specialist Windows-only workloads remain exceptions until validated replacements exist.
 
 ## Delivery model
-
 1. Paid readiness assessment.
-2. Fixed-scope pilot.
-3. Department-by-department transformation.
-4. Managed Linux operations.
-5. Reusable adaptation tooling and reference baselines.
+2. Verified data backup and workflow/application disposition.
+3. Fixed-scope Ubuntu pilot.
+4. Department-by-department migration.
+5. Managed Linux operations and reusable tooling.
 
 ## Non-negotiable principles
-
 - Evidence before recommendation; no assumed compatibility.
 - No big-bang migrations.
 - No device wipe before verified backup, acceptance and rollback readiness.
 - Preserve required business workflows, not ideological OS purity.
-- Measure total cost of ownership over a common 3–5 year horizon.
 - Least privilege, privacy by design and customer-approved discovery.
-- Upstream-first: prefer configuration, integration and extensions over long-lived forks.
 - Every deployment is reproducible, documented and recoverable.
 
-## Project status
+## Migration utility
+The prototype in tools/ performs a selected-folder Windows backup with SHA-256 manifest and a verified, dry-run-first Ubuntu restore into a new directory. It never deletes source data or overwrites existing files. See tools/README.md and MIGRATION-SAFETY.md. It is not an OS installer or a complete application/profile migration product.
 
-Planning and reference-design phase. No customer environment has been assessed or migrated. Technology choices in this repository are candidates pending validation against a pilot's actual requirements.
+## Project status
+Reference-design and prototype phase. No customer environment has been migrated. Backup/restore tools still require disposable-VM testing, Windows-specific validation and independent security review before pilot use.
