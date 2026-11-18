@@ -3,6 +3,8 @@
 import argparse
 import json
 import platform
+import re
+import shlex
 import shutil
 from pathlib import Path
 
@@ -34,24 +36,44 @@ PID1_ALIASES = {
     "s6-linux-init": "s6-unknown",
 }
 
-def parse_os_release(path):
-    """Parse the simple KEY=VALUE format without sourcing or executing the file."""
+
+def _read_os_release_file(path):
+    """Parse os-release assignments as data; never source or evaluate shell syntax."""
     facts = {}
     try:
         lines = Path(path).read_text(encoding="utf-8").splitlines()
     except (OSError, UnicodeError):
-        return facts
+        return None
     for line in lines:
         line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+        if not line or line.startswith("#"):
             continue
-        key, value = line.split("=", 1)
-        value = value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
-            value = value[1:-1]
-        if key and key.replace("_", "").isalnum():
-            facts[key] = value
+        if "=" not in line:
+            continue
+        key, raw_value = line.split("=", 1)
+        if not re.fullmatch(r"[A-Z0-9_]+", key):
+            continue
+        try:
+            # shlex handles os-release quoting/escaping but performs no expansion.
+            # comments=False preserves literal # characters in values.
+            parsed = shlex.split(raw_value, comments=False, posix=True)
+        except ValueError:
+            continue
+        if len(parsed) == 1:
+            facts[key] = parsed[0]
+        elif not parsed:
+            facts[key] = ""
     return facts
+
+
+def parse_os_release(path="/etc/os-release", fallback_path="/usr/lib/os-release"):
+    """Read /etc/os-release, falling back to /usr/lib/os-release only if absent."""
+    facts = _read_os_release_file(path)
+    if facts is not None:
+        return facts
+    fallback = _read_os_release_file(fallback_path)
+    return fallback if fallback is not None else {}
+
 
 def detect_pid1(path):
     try:
@@ -64,9 +86,10 @@ def detect_pid1(path):
             return manager
     return "unknown"
 
+
 def collect_runtime_facts(os_release_path="/etc/os-release", pid1_path="/proc/1/comm",
-                          machine=None, which=shutil.which):
-    release = parse_os_release(os_release_path)
+                          machine=None, which=shutil.which, os_release_fallback="/usr/lib/os-release"):
+    release = parse_os_release(os_release_path, os_release_fallback)
     machine = (machine if machine is not None else platform.machine()).lower()
     architecture = ARCH_ALIASES.get(machine, "unknown")
     package_manager = "apt" if which("apt-get") or which("apt") else "unknown"
@@ -79,8 +102,9 @@ def collect_runtime_facts(os_release_path="/etc/os-release", pid1_path="/proc/1/
         "pid1": detect_pid1(pid1_path),
     }
 
+
 def validate_profile(profile_id, facts):
-    """Return blockers; an empty list means only metadata compatibility, not device approval."""
+    """Return blockers; an empty list means metadata compatibility, not device approval."""
     blockers = []
     profile = PROFILES.get(profile_id)
     if profile is None:
@@ -107,6 +131,7 @@ def validate_profile(profile_id, facts):
             blockers.append("unsupported_service_manager")
     return sorted(set(blockers))
 
+
 def build_report(profile_id, facts):
     blockers = validate_profile(profile_id, facts)
     return {
@@ -125,16 +150,19 @@ def build_report(profile_id, facts):
         ]
     }
 
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", required=True, choices=sorted(PROFILES))
     parser.add_argument("--os-release", type=Path, default=Path("/etc/os-release"))
+    parser.add_argument("--os-release-fallback", type=Path, default=Path("/usr/lib/os-release"))
     parser.add_argument("--pid1", type=Path, default=Path("/proc/1/comm"))
     args = parser.parse_args(argv)
-    facts = collect_runtime_facts(args.os_release, args.pid1)
+    facts = collect_runtime_facts(args.os_release, args.pid1, os_release_fallback=args.os_release_fallback)
     report = build_report(args.profile, facts)
     print(json.dumps(report, indent=2))
     return 0 if report["compatibility"] == "METADATA_COMPATIBLE" else 2
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
