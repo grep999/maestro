@@ -40,3 +40,12 @@ The JSON catalogue is a reviewed candidate catalogue. automation_status=candidat
 3. Read-only package availability planner.
 4. Separate systemd, SysVinit and runit service adapters; other init systems remain blocked until independently tested.
 5. Per-profile Ansible roles and VM acceptance matrix.
+
+## Source notes
+
+- antiX 26.1 release notes: https://antixlinux.com/category/releases/ (multi-init release, runit default, 32/64-bit flavours).
+- antiX 26 FAQ: https://robin-antix.codeberg.page/antiX-FAQ/antiX26/init.html (available init systems and service-package implications).
+- MX Linux 25 user manual: https://raw.githubusercontent.com/MX-Linux/mx-docs/master/mxum_en.pdf (systemd and SysVinit boot choices).
+- Debian init reference: https://wiki.debian.org/Init (runtime init detection guidance and alternative init support).
+- Ubuntu package management: https://ubuntu.com/server/docs/how-to/software/package-management/ (APT package management).
+- Linux Mint release catalogue: https://www.linuxmint.com/download_all.php (22.3 Ubuntu Noble package base).
