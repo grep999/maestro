@@ -44,3 +44,13 @@ Prototype only. Test disposable Windows and Linux VMs with synthetic data. Valid
 ## Distribution adapters
 
 The adapters directory defines a candidate metadata contract, not executable provisioning. It deliberately distinguishes a distro profile from the init system actually running on the device. MX Linux and antiX support multiple init choices; Debian may also use alternatives. The engine must inspect runtime PID 1 before planning service operations. Package and service mutations, plus reboot, are disabled by default. See adapters/README.md. No profile is production-approved.
+
+## Linux runtime discovery (read-only)
+
+Run on a Linux live session or installed candidate:
+
+~~~bash
+python3 tools/discover-linux-runtime.py --profile ubuntu-desktop
+~~~
+
+Replace the profile with one of the IDs in adapters/distribution-adapters.json. The tool reads `/etc/os-release`, `platform.machine()` and `/proc/1/comm`, and checks for APT availability. It does not source shell files, invoke package managers, query the network, or modify the system. It returns a JSON compatibility report and exits non-zero when required facts are unknown or the distro ID, pinned version, architecture, package manager or active init do not match. A metadata-compatible result is not hardware or workflow approval, and it never authorises mutation.
