@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "contract": "linux-transition-foundry.distribution-adapter",
+  "policy": {
+    "package_changes_default": false,
+    "service_changes_default": false,
+    "reboot_default": false,
+    "unknown_runtime": "block",
+    "profile_selection_requires_live_boot_acceptance": true
+  },
+  "profiles": {
+    "ubuntu-desktop": {
+      "family": "debian",
+      "base": "ubuntu",
+      "package_manager": "apt",
+      "service_manager": "systemd",
+      "desktop": "GNOME",
+      "automation_status": "candidate_only"
+    },
+    "xubuntu": {
+      "family": "debian",
+      "base": "ubuntu",
+      "package_manager": "apt",
+      "service_manager": "systemd",
+      "desktop": "Xfce",
+      "automation_status": "candidate_only"
+    },
+    "lubuntu": {
+      "family": "debian",
+      "base": "ubuntu",
+      "package_manager": "apt",
+      "service_manager": "systemd",
+      "desktop": "LXQt",
+      "automation_status": "candidate_only"
+    },
+    "mint-xfce": {
+      "family": "debian",
+      "base": "ubuntu",
+      "package_manager": "apt",
+      "service_manager": "systemd",
+      "desktop": "Xfce",
+      "automation_status": "candidate_only"
+    },
+    "mx-xfce": {
+      "family": "debian",
+      "base": "debian",
+      "package_manager": "apt",
+      "service_manager": "runtime_detect",
+      "supported_service_managers": [
+        "systemd",
+        "sysvinit"
+      ],
+      "desktop": "Xfce",
+      "automation_status": "candidate_only"
+    },
+    "debian-lxqt": {
+      "family": "debian",
+      "base": "debian",
+      "package_manager": "apt",
+      "service_manager": "runtime_detect",
+      "supported_service_managers": [
+        "systemd",
+        "sysvinit",
+        "runit"
+      ],
+      "desktop": "LXQt",
+      "automation_status": "candidate_only"
+    },
+    "antix": {
+      "family": "debian",
+      "base": "debian",
+      "package_manager": "apt",
+      "service_manager": "runtime_detect",
+      "supported_service_managers": [
+        "runit",
+        "sysvinit",
+        "dinit",
+        "s6-rc",
+        "s6-66"
+      ],
+      "desktop": "IceWM",
+      "automation_status": "candidate_only"
+    }
+  },
+  "runtime_detection": {
+    "required_facts": [
+      "os_id",
+      "os_version_id",
+      "architecture",
+      "package_manager",
+      "pid1"
+    ],
+    "service_manager_must_be_detected_from_running_system": true,
+    "profile_metadata_is_not_runtime_evidence": true
+  }
+}
