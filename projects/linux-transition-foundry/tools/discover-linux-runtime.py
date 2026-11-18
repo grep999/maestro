@@ -30,8 +30,8 @@ PID1_ALIASES = {
     "init": "sysvinit",
     "runit": "runit",
     "dinit": "dinit",
-    "s6-svscan": "s6-rc",
-    "s6-linux-init": "s6-rc",
+    "s6-svscan": "s6-unknown",
+    "s6-linux-init": "s6-unknown",
 }
 
 def parse_os_release(path):
