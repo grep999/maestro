@@ -7,6 +7,9 @@
 - Windows user-data backup prototype with SHA-256 manifest.
 - Linux restore utility with manifest verification, dry-run default, path/symlink safety, collision skipping and no source deletion.
 - Distribution matrix, safety contract and unit tests.
+- Distribution adapter metadata contract for all seven profiles; APT package-manager family is recorded while multi-init profiles require runtime PID 1 detection.
+- Fail-closed adapter policy: package/service changes and reboot disabled by default; all profiles remain candidate-only.
+- Adapter contract regression tests included in the existing unittest discovery workflow.
 - Existing Ansible baseline remains Ubuntu-specific; cross-distribution configuration roles are not yet implemented.
 
 ## Selection policy
@@ -24,7 +27,7 @@ Ubuntu GNOME remains the standard candidate for capable PCs. Xfce/LXQt distribut
 - Windows-to-Linux end-to-end backup/restore round trip.
 - Disposable VM/live-boot tests for every curated distro.
 - CPU instruction-set, GPU, Wi-Fi, Bluetooth, suspend, printing and encryption compatibility.
-- Cross-distro Ansible roles and package/service maps.
+- Cross-distro Ansible roles and executable package/service adapters; current adapter increment is metadata and policy only.
 - Independent security review and customer pilot.
 
 ## Release gate
