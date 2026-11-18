@@ -8,6 +8,7 @@ SPEC = importlib.util.spec_from_file_location("discover_linux_runtime", MODULE)
 discovery = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(discovery)
 
+
 class RuntimeDiscoveryTests(unittest.TestCase):
     def make_runtime(self, os_text='ID=ubuntu\nVERSION_ID="26.04"\n', pid1="systemd\n", machine="x86_64"):
         tmp = tempfile.TemporaryDirectory()
@@ -16,7 +17,10 @@ class RuntimeDiscoveryTests(unittest.TestCase):
         os_file, pid_file = root / "os-release", root / "comm"
         os_file.write_text(os_text)
         pid_file.write_text(pid1)
-        facts = discovery.collect_runtime_facts(os_file, pid_file, machine, which=lambda name: "/usr/bin/apt-get" if name == "apt-get" else None)
+        facts = discovery.collect_runtime_facts(
+            os_file, pid_file, machine,
+            which=lambda name: "/usr/bin/apt-get" if name == "apt-get" else None,
+        )
         return facts
 
     def test_ubuntu_systemd_is_metadata_compatible(self):
@@ -52,8 +56,8 @@ class RuntimeDiscoveryTests(unittest.TestCase):
         return path
 
     def test_unknown_runtime_facts_fail_closed(self):
-        facts = {"os_id":"", "os_version_id":"", "architecture":"unknown",
-                 "package_manager":"unknown", "pid1":"unknown"}
+        facts = {"os_id": "", "os_version_id": "", "architecture": "unknown",
+                 "package_manager": "unknown", "pid1": "unknown"}
         blockers = discovery.validate_profile("ubuntu-desktop", facts)
         self.assertIn("unknown_os_id", blockers)
         self.assertIn("unknown_pid1", blockers)
@@ -77,12 +81,38 @@ class RuntimeDiscoveryTests(unittest.TestCase):
         facts = self.make_runtime('ID=ubuntu\nVERSION_ID=26.04\nEVIL=$(touch /tmp/should-not-exist)\n')
         self.assertNotIn("EVIL", facts)
 
+    def test_os_release_quoted_escapes_are_decoded_without_execution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "os-release"
+            path.write_text('ID=ubuntu\nVERSION_ID=26.04\nPRETTY_NAME="Ubuntu \\"LTS\\" # desktop"\n')
+            parsed = discovery.parse_os_release(path)
+        self.assertEqual(parsed["PRETTY_NAME"], 'Ubuntu "LTS" # desktop')
+
+    def test_os_release_falls_back_only_when_primary_is_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            primary, fallback = root / "missing-os-release", root / "usr-lib-os-release"
+            fallback.write_text("ID=debian\nVERSION_ID=13\n")
+            parsed = discovery.parse_os_release(primary, fallback)
+            self.assertEqual(parsed["ID"], "debian")
+            primary.write_text("ID=ubuntu\nVERSION_ID=26.04\n")
+            parsed = discovery.parse_os_release(primary, fallback)
+            self.assertEqual(parsed["ID"], "ubuntu")
+
+    def test_malformed_os_release_value_is_ignored(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "os-release"
+            path.write_text('ID=ubuntu\nVERSION_ID="unterminated\n')
+            parsed = discovery.parse_os_release(path)
+        self.assertEqual(parsed, {"ID": "ubuntu"})
+
     def test_profile_never_enables_mutations(self):
         facts = self.make_runtime()
         for profile_id in discovery.PROFILES:
             report = discovery.build_report(profile_id, facts)
             self.assertFalse(report["mutations_permitted"])
             self.assertFalse(report["reboot_permitted"])
+
 
 if __name__ == "__main__":
     unittest.main()
