@@ -44,4 +44,4 @@ The adapter metadata and fail-closed policy are implemented. The next Momentum i
 
 ## Next cycle after this increment
 
-Implement a read-only runtime fact collector for /etc/os-release, architecture, package manager and PID 1. It must not execute package commands or modify the target system.
+Next: validate this increment in CI and obtain independent review. If accepted, implement read-only package availability planning; do not yet execute package or service mutations.
