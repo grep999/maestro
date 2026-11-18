@@ -40,3 +40,7 @@ Windows applications/licences; email archives; browser profiles/passwords/passke
 
 ## Release gate
 Prototype only. Test disposable Windows and Linux VMs with synthetic data. Validate interrupted copies, long paths, Unicode, OneDrive placeholders, reparse points, large data sets, each distro's hardware drivers and rollback. Independent security review is required before customer use.
+
+## Distribution adapters
+
+The adapters directory defines a candidate metadata contract, not executable provisioning. It deliberately distinguishes a distro profile from the init system actually running on the device. MX Linux and antiX support multiple init choices; Debian may also use alternatives. The engine must inspect runtime PID 1 before planning service operations. Package and service mutations, plus reboot, are disabled by default. See adapters/README.md. No profile is production-approved.
