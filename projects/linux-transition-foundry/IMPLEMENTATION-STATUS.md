@@ -1,41 +1,40 @@
-# Implementation status — Linux Office Baseline 1.0
+# Implementation status — Linux baseline and migration prototype
 
-## Delivered in this increment
-
-- Candidate platform policy documented: Ubuntu 26.04 LTS primary candidate; 24.04 LTS compatibility fallback.
-- Conservative Ansible workstation role with package allowlists.
-- Firewall management disabled by default and requires explicit opt-in.
-- Automatic security-update configuration is enabled by default.
-- Empty lab inventory; no target host is configured.
-- No disk partitioning, OS installation, identity enrolment, account creation, reboot or destructive operations.
-- Python safety-contract tests.
-- Repository-level GitHub Actions workflow for safety tests and Ansible syntax validation.
+## Delivered
+- Ubuntu 26.04 LTS primary candidate; 24.04 LTS compatibility fallback.
+- Conservative Ansible workstation baseline with package allowlists and firewall opt-in.
+- Windows inventory helper.
+- Windows user-data backup prototype: Desktop, Documents, Pictures, Music, Videos, Favorites; Downloads is opt-in.
+- SHA-256 manifest with relative paths, sizes and source metadata.
+- Ubuntu restore utility: manifest verification, dry-run by default, safe relative paths, symlink/path-escape rejection, checksum verification, no overwrite, no source deletion.
+- Migration safety contract and initial restore safety tests.
+- GitHub Actions workflow already discovers Python unittest tests and performs Ansible syntax validation.
 
 ## Evidence status
 
 | Check | Status |
 |---|---|
-| Files committed to project branch | PASS |
-| Static safety contract authored | PASS — execution pending |
-| Ansible syntax workflow authored | PASS — execution pending |
-| Disposable VM deployment | NOT RUN |
-| Idempotence test | NOT RUN |
-| Hardware/peripheral validation | NOT RUN |
-| Disk encryption and recovery test | NOT RUN |
-| Identity integration | NOT IMPLEMENTED |
+| Source files committed to project branch | PASS |
+| Restore safety tests authored | PASS — execution pending |
+| Windows PowerShell backup execution | NOT RUN |
+| Windows backup/restore round trip | NOT RUN |
+| Ansible syntax / CI | PENDING — no run evidence returned |
+| Disposable Windows and Ubuntu VM tests | NOT RUN |
+| Interrupted-copy and large-file tests | NOT RUN |
+| OneDrive/cloud placeholder tests | NOT RUN |
+| Encryption and recovery rehearsal | NOT RUN |
+| Independent security review | NOT DONE |
 | Customer pilot | NOT STARTED |
 
-The GitHub connector did not return any workflow runs for the latest commit. Therefore CI must be treated as pending, not passed. Execute the workflow in GitHub Actions or run the documented commands locally before treating the baseline as validated.
+Do not interpret authored tests as passed. The migration utility is a prototype and must not be used to authorise disk erasure or a production migration.
 
-## Immediate next steps
-
-1. Run safety tests and Ansible syntax validation.
-2. Provision a disposable Ubuntu 26.04 LTS VM and validate package names/service units.
-3. Test Ansible check mode, first application and second idempotent application.
-4. Add explicit identity, backup, monitoring and endpoint-enrolment adapters only after requirements are defined.
-5. Validate disk encryption during installation and rehearse recovery-key handling.
-6. Obtain independent security review before pilot use.
+## Next validation gate
+1. Run Python tests in CI and locally.
+2. Test Windows backup on a disposable Windows VM with synthetic files, Unicode names, long paths, empty folders, locked files and junctions.
+3. Restore to a disposable Ubuntu VM; verify hashes and collision handling.
+4. Test interrupted backup recovery, large datasets and cloud-sync placeholders.
+5. Review encryption, retention, EFS and application-specific export procedures.
+6. Obtain independent security review and rehearse rollback before pilot.
 
 ## Release gate
-
-Do not label this baseline production-ready until the VM tests, recovery tests, security review, hardware compatibility matrix and pilot acceptance criteria are complete.
+Production readiness requires successful end-to-end evidence, a tested backup/restore and rollback process, hardware/application compatibility, user acceptance and independent security review.
