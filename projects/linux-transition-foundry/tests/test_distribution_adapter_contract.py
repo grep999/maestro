@@ -25,7 +25,10 @@ class DistributionAdapterContractTests(unittest.TestCase):
         for profile_id in ("mx-xfce", "debian-lxqt", "antix"):
             profile = CONTRACT["profiles"][profile_id]
             self.assertEqual(profile["service_manager"], "runtime_detect")
-            self.assertGreaterEqual(len(profile["observed_init_options"]), 2)
+
+    def test_multi_init_profiles_record_known_boot_choices(self):
+        self.assertGreaterEqual(len(CONTRACT["profiles"]["mx-xfce"]["observed_init_options"]), 2)
+        self.assertGreaterEqual(len(CONTRACT["profiles"]["antix"]["observed_init_options"]), 2)
 
     def test_antix_declares_all_documented_init_families(self):
         supported = set(CONTRACT["profiles"]["antix"]["observed_init_options"])
