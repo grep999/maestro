@@ -50,11 +50,11 @@ class RuntimeDiscoveryTests(unittest.TestCase):
         self.assertIn("unsupported_architecture", blockers)
 
     def test_wrong_distribution_version_blocks_profile(self):
-        facts = self.make_runtime("ID=ubuntu\\nVERSION_ID=24.04\\n")
+        facts = self.make_runtime("ID=ubuntu\nVERSION_ID=24.04\n")
         self.assertIn("unsupported_distribution_version", discovery.validate_profile("ubuntu-desktop", facts))
 
     def test_antix_is_the_only_profile_allowing_x86(self):
-        facts = self.make_runtime("ID=antix\\nVERSION_ID=26.1\\n", "runit\\n", "i686")
+        facts = self.make_runtime("ID=antix\nVERSION_ID=26.1\n", "runit\n", "i686")
         self.assertEqual(discovery.validate_profile("antix", facts), [])
         self.assertIn("profile_architecture_mismatch", discovery.validate_profile("ubuntu-desktop", facts))
 
