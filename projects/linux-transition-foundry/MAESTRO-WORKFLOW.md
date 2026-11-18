@@ -53,4 +53,4 @@ The adapter metadata and fail-closed policy are implemented. The next Momentum i
 
 ## Next cycle after this increment
 
-First obtain an eligible Copilot review request and inspect its review artifact; keep both tasks in VERIFYING until findings and evidence are resolved. If accepted, implement the read-only package availability planner; do not yet execute package or service mutations.
+Copilot review request is integrated but remains blocked by GitHub entitlement/policy (HTTP 422); the latest PR has no submitted reviews or inline review threads. Do not treat the workflow job's green conclusion as a review. The next Momentum increment is LTF-PACKAGE-003: a deterministic read-only office package planner using caller-supplied availability snapshots. It does not invoke APT, access the network, request privileges, install packages or mutate the host. Keep the planner VERIFYING until CI, distro metadata validation and independent review evidence exist.
