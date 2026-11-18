@@ -29,8 +29,12 @@ def read_inventory(path):
         raise ValueError("Inventory has no usable physical RAM value.")
     cpu = processors[0] if processors and isinstance(processors[0], dict) else {}
     arch_text = str(os_data.get("OSArchitecture") or computer.get("SystemType") or "").lower()
-    data_width = cpu.get("DataWidth")
-    arch = "x86" if "32" in arch_text or data_width == 32 else "x64"
+    try:
+        data_width = int(cpu.get("DataWidth") or 0)
+    except (TypeError, ValueError):
+        data_width = 0
+    # CPU capability wins over the bitness of the currently installed Windows OS.
+    arch = "x64" if data_width == 64 or "x64" in arch_text or "64" in arch_text else "x86"
     return round(int(ram) / (1024 ** 3), 2), arch
 
 def recommend(ram_gb, arch):
