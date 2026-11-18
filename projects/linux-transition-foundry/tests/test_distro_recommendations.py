@@ -22,10 +22,21 @@ class DistroRecommendationTests(unittest.TestCase):
             p=Path(tmp)/"inventory.json"
             p.write_text(json.dumps({"computer":{"TotalPhysicalMemory":8*1024**3,"SystemType":"x86-based PC"},
                 "operating_system":{"OSArchitecture":"32-bit"},
-                "processors":[{"DataWidth":64}]}))
+                "processors":[{"Name":"Intel(R) Core(TM) CPU","DataWidth":64}]}))
             ram, arch=advisor.read_inventory(p)
             self.assertEqual(arch,"x64")
             self.assertEqual(ram,8.0)
+
+    def test_wmi_architecture_code_is_authoritative(self):
+        self.assertEqual(advisor.detect_architecture({"Architecture":9,"DataWidth":64},{},{}),"x64")
+        self.assertEqual(advisor.detect_architecture({"Architecture":0,"DataWidth":32},{},{}),"x86")
+
+    def test_arm64_is_not_misclassified_as_x64(self):
+        self.assertEqual(advisor.detect_architecture({"Name":"ARM Processor","DataWidth":64},{},{"OSArchitecture":"ARM64"}),"unknown")
+        self.assertEqual(advisor.recommend(16,"unknown"),[])
+
+    def test_unknown_architecture_gets_no_recommendation(self):
+        self.assertEqual(advisor.recommend(8,"unknown"),[])
 
     def test_extremely_low_ram_is_flagged_no_match(self):
         self.assertEqual(advisor.recommend(0.25,"x86"),[])
