@@ -1,0 +1,18 @@
+---
+baseline_manage_firewall: false
+baseline_enable_unattended_upgrades: true
+baseline_install_common_packages: true
+baseline_office_profile: true
+baseline_common_packages:
+  - ca-certificates
+  - curl
+  - rsync
+  - unattended-upgrades
+  - ufw
+  - apparmor
+  - apparmor-utils
+baseline_office_packages:
+  - libreoffice
+  - evince
+  - remmina
+baseline_ufw_allowed_tcp_ports: []
