@@ -25,7 +25,7 @@ function Get-SafeValue {
 $os = Get-SafeValue { Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber, OSArchitecture, InstallDate, LastBootUpTime }
 $computer = Get-SafeValue { Get-CimInstance Win32_ComputerSystem | Select-Object Manufacturer, Model, TotalPhysicalMemory, SystemType }
 $bios = Get-SafeValue { Get-CimInstance Win32_BIOS | Select-Object SMBIOSBIOSVersion, ReleaseDate }
-$processor = Get-SafeValue { Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, AddressWidth, DataWidth }
+$processor = Get-SafeValue { Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, Architecture, AddressWidth, DataWidth }
 $disks = Get-SafeValue { Get-CimInstance Win32_DiskDrive | Select-Object Model, InterfaceType, MediaType, Size }
 $memory = Get-SafeValue { Get-CimInstance Win32_PhysicalMemory | Select-Object Capacity, Speed, MemoryType }
 $apps = Get-SafeValue {
