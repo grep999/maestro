@@ -1,0 +1,23 @@
+---
+- name: Configure Linux Office Baseline
+  hosts: linux_office
+  gather_facts: true
+  become: true
+
+  pre_tasks:
+    - name: Require Ubuntu and supported architecture
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.distribution == "Ubuntu"
+          - ansible_facts.architecture in ["x86_64", "aarch64"]
+        fail_msg: "This baseline currently targets Ubuntu amd64/arm64 only."
+
+    - name: Require explicit confirmation before enabling firewall
+      ansible.builtin.assert:
+        that:
+          - not baseline_manage_firewall or (baseline_ufw_allowed_tcp_ports is defined)
+        fail_msg: "Review network and remote-support requirements before firewall activation."
+      when: baseline_manage_firewall | bool
+
+  roles:
+    - role: office_baseline
