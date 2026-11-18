@@ -16,6 +16,17 @@ class DistroRecommendationTests(unittest.TestCase):
         self.assertIn("mx-xfce",ids); self.assertNotIn("ubuntu-desktop",ids)
     def test_32_bit_machine_is_restricted_to_antix_profile(self):
         self.assertEqual([x["id"] for x in advisor.recommend(2,"x86")],["antix"])
+
+    def test_64_bit_cpu_is_detected_even_with_32_bit_windows(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/"inventory.json"
+            p.write_text(json.dumps({"computer":{"TotalPhysicalMemory":8*1024**3,"SystemType":"x86-based PC"},
+                "operating_system":{"OSArchitecture":"32-bit"},
+                "processors":[{"DataWidth":64}]}))
+            ram, arch=advisor.read_inventory(p)
+            self.assertEqual(arch,"x64")
+            self.assertEqual(ram,8.0)
+
     def test_extremely_low_ram_is_flagged_no_match(self):
         self.assertEqual(advisor.recommend(0.25,"x86"),[])
 
