@@ -42,6 +42,15 @@ The adapter metadata and fail-closed policy are implemented. The next Momentum i
 - Independent Reviewer: challenge the exact candidate; no review is claimed until a review artifact exists.
 - Orchestrator: preserve branch boundaries, gate transitions and record evidence.
 
+## Copilot independent review integration
+
+- Repository workflow: `.github/workflows/copilot-review.yml` requests Copilot code review on relevant PR events and supports manual dispatch for a selected PR.
+- Review guidance: `.github/copilot-instructions.md` and `.github/instructions/linux-transition-foundry.instructions.md` define repository and project-specific review criteria.
+- Setup and acceptance instructions: `COPILOT-REVIEW.md`.
+- The previous `GITHUB_TOKEN` request returned HTTP 422 because the requesting actor/repository was not eligible under Copilot licensing or organisation policy. The workflow now supports `COPILOT_REVIEW_TOKEN` as an eligible user's fine-grained token and reports entitlement failure without disguising it as a code-test failure.
+- The GitHub integration available to this execution cannot configure repository Actions secrets. An authorised repository user must add `COPILOT_REVIEW_TOKEN` in GitHub Settings → Secrets and variables → Actions.
+- A request or pending status is not a completed review. The task remains VERIFYING until Copilot review output exists and is assessed.
+
 ## Next cycle after this increment
 
-Next: validate this increment in CI and obtain independent review. If accepted, implement read-only package availability planning; do not yet execute package or service mutations.
+First obtain an eligible Copilot review request and inspect its review artifact; keep both tasks in VERIFYING until findings and evidence are resolved. If accepted, implement the read-only package availability planner; do not yet execute package or service mutations.
