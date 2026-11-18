@@ -1,36 +1,42 @@
-# Migration tools
+# Migration and platform-selection tools
 
-Prototype Windows-to-Ubuntu user-file copy and restore. It does not install Ubuntu, repartition disks, migrate applications, transfer credentials or delete source data.
+These tools support a cautious Windows-to-Linux transition. They do not install an operating system, repartition disks, migrate applications or credentials, or delete source data.
 
-## Before starting
-- Use a separate external drive with enough free space. Prefer BitLocker To Go or approved encryption; keep its recovery key separately.
-- Make OneDrive/SharePoint files available offline and confirm sync. Cloud placeholders may not contain file data.
-- Run backup as the Windows user whose files are being migrated. Review redirected folders and application-specific data.
-- Verify the backup on another device and open representative files.
-- Keep the original Windows installation until Ubuntu restore and user acceptance are complete.
+## 1. Windows backup
+Use Start-WindowsDataBackup.ps1 to copy selected user folders to a separate encrypted external drive. Review the manifest and verify the backup independently before any OS installation.
 
-## Windows backup
-~~~powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-.\Start-WindowsDataBackup.ps1 -Destination E:\
-~~~
-Add -IncludeDownloads to include Downloads. Defaults: Desktop, Documents, Pictures, Music, Videos and Favorites. The script creates a manifest with relative paths, sizes and SHA-256 hashes; it does not follow junctions.
+## 2. Hardware inventory
+Collect-WindowsInventory.ps1 gathers local hardware, processor architecture, OS, installed application and printer metadata. It is read-only. Review/redact its output before sharing.
 
-## Ubuntu restore
+## 3. Distribution recommendation
+Run from the repository project directory:
+
 ~~~bash
-python3 restore-to-ubuntu.py /media/$USER/DRIVE/Ubuntu-Migration-TIMESTAMP
-python3 restore-to-ubuntu.py /media/$USER/DRIVE/Ubuntu-Migration-TIMESTAMP --apply
+python3 tools/recommend-distro.py path/to/reviewed-windows-inventory.json
+~~~
+
+The recommender screens physical RAM and CPU architecture against the curated profiles in DISTRIBUTION-MATRIX.md. It returns candidates, not a compatibility verdict. For 32-bit CPUs it only offers antiX; modern application availability must be checked separately.
+
+## 4. Restore on Ubuntu or another supported Linux desktop
+~~~bash
+python3 tools/restore-to-ubuntu.py /media/$USER/DRIVE/Ubuntu-Migration-TIMESTAMP
+python3 tools/restore-to-ubuntu.py /media/$USER/DRIVE/Ubuntu-Migration-TIMESTAMP --apply
 ~~~
 First command verifies and previews. Second copies into ~/Migration-Import. Existing files are skipped, never overwritten. Use --target for a different destination.
 
+## Platform selection rules
+- 6 GB+ RAM: Ubuntu Desktop GNOME eligible.
+- 4–6 GB: Linux Mint Xfce or Xubuntu preferred.
+- 2–4 GB: Lubuntu or Xubuntu preferred.
+- 1–2 GB: MX Linux Xfce or Debian LXQt; antiX for very constrained workloads.
+- 512 MB–1 GB: antiX legacy exception only.
+- Below 512 MB: no supported office recommendation.
+- Always live-boot and test Wi-Fi, graphics, audio, suspend, peripherals, encryption, browser and required applications.
+
+The RAM bands are conservative office-workload selection thresholds, not official installer minimums. See DISTRIBUTION-MATRIX.md for sources and limitations.
+
 ## Not automatically migrated
-Windows applications/licences; Outlook/Exchange or Thunderbird archives; browser profiles/passwords/passkeys/cookies; certificates/SSH keys; cloud-only files; WSL/VMs/databases/ERP/CAD state; Windows permissions, EFS, NTFS alternate streams and system settings. Export through supported application workflows and validate separately. Do not copy credential stores wholesale.
+Windows applications/licences; email archives; browser profiles/passwords/passkeys/cookies; certificates/SSH keys; cloud-only files; WSL/VMs/databases/ERP/CAD state; Windows permissions, EFS, NTFS alternate streams and system settings. Export through supported application workflows and validate separately. Do not copy credential stores wholesale.
 
 ## Release gate
-Prototype only. Test disposable Windows and Ubuntu VMs with synthetic data. Validate interrupted copies, long paths, Unicode, OneDrive placeholders, reparse points, large data sets and rollback. Independent security review is required before customer use.
-
----
-
-## Existing inventory helper
-
-Collect-WindowsInventory.ps1 remains an optional, read-only discovery helper. Its output may contain sensitive hardware, application and printer metadata; review and authorise any transfer.
+Prototype only. Test disposable Windows and Linux VMs with synthetic data. Validate interrupted copies, long paths, Unicode, OneDrive placeholders, reparse points, large data sets, each distro's hardware drivers and rollback. Independent security review is required before customer use.
