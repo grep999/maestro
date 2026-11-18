@@ -95,6 +95,11 @@
       ],
       "supported_versions": [
         "13"
+      ],
+      "observed_init_options": [
+        "systemd",
+        "sysvinit",
+        "runit"
       ]
     },
     "antix": {
