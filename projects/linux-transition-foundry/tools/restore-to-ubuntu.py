@@ -30,8 +30,15 @@ def plan(root, target, manifest):
             raise ValueError(f"Duplicate or reserved manifest path: {rel}")
         seen.add(rel)
         src = root / rel
-        if not src.is_file() or src.is_symlink():
+        cursor = root
+        for part in rel.parts:
+            cursor = cursor / part
+            if cursor.is_symlink():
+                raise ValueError(f"Symlink in backup path: {rel}")
+        if not src.is_file():
             raise ValueError(f"Backup file missing or not regular: {rel}")
+        if root not in src.resolve().parents:
+            raise ValueError(f"Backup path escapes source root: {rel}")
         if src.stat().st_size != int(entry["size"]) or sha256(src) != entry["sha256"]:
             raise ValueError(f"Size or SHA-256 mismatch: {rel}")
         operations.append((src, target / rel))
