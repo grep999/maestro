@@ -3,6 +3,17 @@ name: Request GitHub Copilot review
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, synchronize]
+    paths:
+      - "projects/linux-transition-foundry/**"
+      - ".github/copilot-instructions.md"
+      - ".github/instructions/**"
+      - ".github/workflows/copilot-review.yml"
+  workflow_dispatch:
+    inputs:
+      pull_number:
+        description: "Pull request number to review"
+        required: true
+        type: number
 
 permissions:
   contents: read
@@ -10,32 +21,70 @@ permissions:
 
 jobs:
   request-copilot-review:
-    name: Independent review by GitHub Copilot
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    name: Request independent Copilot review
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Request Copilot code review
         uses: actions/github-script@v8
+        env:
+          COPILOT_REVIEW_TOKEN: ${{ secrets.COPILOT_REVIEW_TOKEN }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # A user token whose owner is eligible for Copilot code review can be
+          # supplied as COPILOT_REVIEW_TOKEN. GITHUB_TOKEN is the safe fallback.
+          github-token: ${{ secrets.COPILOT_REVIEW_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
-            const pull_number = context.issue.number;
+            const pull_number = context.eventName === "workflow_dispatch"
+              ? Number(context.payload.inputs.pull_number)
+              : context.issue.number;
+
+            if (!Number.isInteger(pull_number) || pull_number < 1) {
+              core.setFailed("A valid pull request number is required.");
+              return;
+            }
+
             try {
               const response = await github.request(
                 "POST /repos/{owner}/{repo}/pulls/{pull_number}/copilot-code-review",
-                { owner, repo, pull_number, headers: { "X-GitHub-Api-Version": "2026-03-10" } }
+                {
+                  owner,
+                  repo,
+                  pull_number,
+                  headers: { "X-GitHub-Api-Version": "2026-03-10" },
+                  // Omit review_effort so GitHub applies the level available
+                  // to this repository and requesting identity.
+                }
               );
-              core.info(`Copilot review requested: ${response.status}`);
+              core.notice(`Copilot review request created (HTTP ${response.status}) for PR #${pull_number}.`);
+              await core.summary
+                .addHeading("Copilot independent review")
+                .addRaw(`Review request created for PR #${pull_number}. A request is not a completed review; wait for Copilot's review artifact before closing the Maestro MASTERY gate.`)
+                .write();
             } catch (error) {
               if (error.status === 409) {
-                core.info("A Copilot review is already pending for this pull request.");
+                core.notice(`Copilot already has a pending review for PR #${pull_number}.`);
+                await core.summary
+                  .addHeading("Copilot independent review")
+                  .addRaw(`A Copilot review is already pending for PR #${pull_number}. Do not treat it as complete until review comments or a submitted review appear.`)
+                  .write();
                 return;
               }
-              core.setFailed(
-                `Copilot review could not be requested (HTTP ${error.status ?? "unknown"}). ` +
-                "Confirm Copilot code review is enabled and available for this repository, " +
-                "and that the workflow token has pull-requests: write permission. " +
-                (error.message ?? "")
-              );
+
+              const message = error.message ?? "No additional error detail.";
+              if (error.status === 422) {
+                core.warning(
+                  `Copilot review unavailable for PR #${pull_number} (HTTP 422). ` +
+                  "GitHub rejected the actor/repository entitlement, quota, or licensing policy. " +
+                  "Configure COPILOT_REVIEW_TOKEN with an eligible user identity or enable Copilot code review in GitHub organization settings. " +
+                  message
+                );
+                await core.summary
+                  .addHeading("Copilot review unavailable")
+                  .addRaw("No independent review was created. Configure the COPILOT_REVIEW_TOKEN repository secret with a fine-grained token belonging to an eligible Copilot user and Pull requests: read/write access, or have an organization owner enable Copilot code review for members. The MASTERY gate remains blocked.")
+                  .write();
+                return;
+              }
+
+              core.setFailed(`Copilot review request failed (HTTP ${error.status ?? "unknown"}): ${message}`);
             }
