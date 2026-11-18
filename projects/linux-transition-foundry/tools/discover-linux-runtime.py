@@ -90,8 +90,12 @@ def validate_profile(profile_id, facts):
             blockers.append("unknown_" + key)
     if facts.get("os_id") not in PROFILE_OS_IDS.get(profile_id, set()):
         blockers.append("distribution_id_mismatch")
+    if facts.get("os_version_id") not in profile.get("supported_versions", []):
+        blockers.append("unsupported_distribution_version")
     if facts.get("architecture") not in ("x64", "x86"):
         blockers.append("unsupported_architecture")
+    if facts.get("architecture") not in profile.get("arch", ["x64"]):
+        blockers.append("profile_architecture_mismatch")
     if facts.get("package_manager") != profile.get("package_manager"):
         blockers.append("package_manager_mismatch")
     expected_init = profile.get("service_manager")
@@ -101,10 +105,6 @@ def validate_profile(profile_id, facts):
         allowed = profile.get("observed_init_options", [])
         if facts.get("pid1") not in allowed:
             blockers.append("unsupported_service_manager")
-    if facts.get("architecture") == "x86" and "x86" not in profile.get("arch", ["x64"]):
-        blockers.append("profile_architecture_mismatch")
-    if facts.get("architecture") == "x64" and "x64" not in profile.get("arch", ["x64"]):
-        blockers.append("profile_architecture_mismatch")
     return sorted(set(blockers))
 
 def build_report(profile_id, facts):
