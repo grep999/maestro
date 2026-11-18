@@ -1,0 +1,42 @@
+{
+  "task_id": "LTF-PACKAGE-003",
+  "title": "Read-only office package availability planner",
+  "lifecycle_state": "VERIFYING",
+  "phase": "MOMENTUM",
+  "objective": "Produce a deterministic, read-only office package plan from caller-supplied APT availability metadata for each supported distro profile.",
+  "scope": [
+    "Distro-specific package candidate catalog",
+    "Caller-supplied availability snapshot",
+    "Fail-closed unknown/unavailable handling",
+    "Deterministic JSON report",
+    "Unit tests"
+  ],
+  "non_goals": [
+    "Running apt or apt-cache",
+    "Network access or repository refresh",
+    "Installing/removing/upgrading packages",
+    "Changing services or rebooting"
+  ],
+  "acceptance_criteria": [
+    "All seven supported profiles have package candidate groups",
+    "Unknown and unavailable packages are never selected",
+    "Plan is deterministic for identical inputs",
+    "All execution flags remain false and packages_to_install remains empty",
+    "Tests cover unknown profile, malformed input, missing availability, unavailable candidate and deterministic selection",
+    "Independent review required before ACCEPTED"
+  ],
+  "safety_invariants": [
+    "No subprocess or package manager invocation",
+    "No network or privileged operation",
+    "No package installation or system mutation",
+    "Human approval required for any future execution capability"
+  ],
+  "evidence": [
+    "Source and tests committed on project/linux-transition-foundry branch"
+  ],
+  "blockers": [
+    "CI execution on candidate commit",
+    "Independent review artifact",
+    "Real distro package metadata validation"
+  ]
+}\n

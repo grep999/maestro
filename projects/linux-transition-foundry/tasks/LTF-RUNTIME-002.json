@@ -1,0 +1,48 @@
+{
+  "schema_version": 2,
+  "project_id": "linux-transition-foundry",
+  "task_id": "LTF-RUNTIME-002",
+  "title": "Implement read-only Linux runtime discovery",
+  "outcome": "Collect Linux distro identity/version, architecture, package-manager availability and actual PID 1, then produce a fail-closed profile compatibility report without modifying the host.",
+  "baseline": {
+    "type": "git",
+    "ref": "project/linux-transition-foundry",
+    "sha": "b3ca7cffd25b88221a85e791cda29b0947805608",
+    "version": "adapter contract"
+  },
+  "stage": "MOMENTUM",
+  "owner": "BUILDER",
+  "reviewer": "INDEPENDENT_REVIEWER",
+  "scope": [
+    "Parse os-release as data without sourcing it",
+    "Detect architecture and active PID 1 from runtime facts",
+    "Detect APT availability without invoking it",
+    "Validate exact curated distro ID, version and architecture",
+    "Return machine-readable compatibility report and nonzero exit on blockers",
+    "Test unknown facts, unsupported versions, init mismatch and legacy architecture"
+  ],
+  "exclusions": [
+    "No package or service commands",
+    "No repository, disk, bootloader or network changes",
+    "No reboot or OS installation",
+    "No automatic authorisation from metadata compatibility"
+  ],
+  "dependencies": [
+    "LTF-ADAPTER-001"
+  ],
+  "acceptance": [
+    "Collector is read-only and does not execute os-release content",
+    "Unknown or mismatched facts fail closed",
+    "All supported profile versions and architectures are explicit",
+    "All tests pass in CI",
+    "Independent reviewer inspects exact commit and test evidence"
+  ],
+  "evidence_required": [
+    "Git commit SHA",
+    "Unit test output",
+    "GitHub Actions run",
+    "Independent review findings"
+  ],
+  "risk": "R2",
+  "state": "VERIFYING"
+}

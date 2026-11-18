@@ -1,0 +1,33 @@
+name: Linux Transition package planner
+
+on:
+  pull_request:
+    paths:
+      - "projects/linux-transition-foundry/tools/plan-office-packages.py"
+      - "projects/linux-transition-foundry/tests/test_package_planner.py"
+      - "projects/linux-transition-foundry/tasks/LTF-PACKAGE-003.json"
+      - ".github/workflows/linux-transition-package-planner.yml"
+  push:
+    branches:
+      - "project/linux-transition-foundry"
+    paths:
+      - "projects/linux-transition-foundry/tools/plan-office-packages.py"
+      - "projects/linux-transition-foundry/tests/test_package_planner.py"
+      - "projects/linux-transition-foundry/tasks/LTF-PACKAGE-003.json"
+      - ".github/workflows/linux-transition-package-planner.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package-planner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Compile planner
+        run: python -m py_compile projects/linux-transition-foundry/tools/plan-office-packages.py
+      - name: Run package planner tests
+        run: python -m unittest discover -s projects/linux-transition-foundry/tests -p 'test_package_planner.py' -v

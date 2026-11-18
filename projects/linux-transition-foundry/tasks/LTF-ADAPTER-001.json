@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "project_id": "linux-transition-foundry",
+  "task_id": "LTF-ADAPTER-001",
+  "title": "Define safe multi-distribution adapter contract",
+  "outcome": "Separate distro-independent migration intent from distribution-specific package and service behaviour, with runtime init detection and fail-closed mutation policy.",
+  "baseline": {
+    "type": "git",
+    "ref": "project/linux-transition-foundry",
+    "sha": "cbd5c91f0f1a5682604a807fd21ede46d8f65b51",
+    "version": "architecture-screening baseline"
+  },
+  "stage": "MOMENTUM",
+  "owner": "BUILDER",
+  "reviewer": "INDEPENDENT_REVIEWER",
+  "scope": [
+    "Add one adapter metadata record for each curated distro recommender profile",
+    "Require runtime PID 1 detection for multi-init distributions",
+    "Disable package, service and reboot mutations by default",
+    "Add regression tests and documentation",
+    "Use primary distro documentation for init-system claims"
+  ],
+  "exclusions": [
+    "No package installation or removal",
+    "No service enable/disable/restart",
+    "No repository changes or OS upgrades",
+    "No OS installation, partitioning, bootloader changes or reboot",
+    "No claim of independent review or physical/VM validation"
+  ],
+  "dependencies": [],
+  "acceptance": [
+    "All seven recommender profiles have exactly one adapter metadata entry",
+    "MX Linux, Debian and antiX do not infer active init solely from distro name",
+    "All profiles remain candidate-only and all mutations default to disabled",
+    "Unit tests cover profile completeness and fail-closed safety policy",
+    "CI evidence is recorded before acceptance"
+  ],
+  "evidence_required": [
+    "Git commit SHA and diff",
+    "Adapter metadata JSON",
+    "Unit test output or GitHub Actions run",
+    "Primary distro documentation links",
+    "Independent reviewer findings"
+  ],
+  "risk": "R2",
+  "state": "VERIFYING"
+}

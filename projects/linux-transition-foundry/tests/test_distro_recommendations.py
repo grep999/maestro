@@ -1,0 +1,44 @@
+import importlib.util
+from pathlib import Path
+import tempfile, json, unittest
+MODULE=Path(__file__).resolve().parents[1]/"tools"/"recommend-distro.py"
+SPEC=importlib.util.spec_from_file_location("recommend_distro",MODULE)
+advisor=importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(advisor)
+
+class DistroRecommendationTests(unittest.TestCase):
+    def test_modern_machine_prefers_standard_desktop(self):
+        self.assertEqual(advisor.recommend(8,"x64")[0]["id"],"ubuntu-desktop")
+    def test_midrange_machine_gets_xfce_options(self):
+        ids=[x["id"] for x in advisor.recommend(4,"x64")]
+        self.assertIn("mint-xfce",ids); self.assertIn("xubuntu",ids)
+    def test_low_ram_machine_gets_lightweight_options(self):
+        ids=[x["id"] for x in advisor.recommend(1.5,"x64")]
+        self.assertIn("mx-xfce",ids); self.assertNotIn("ubuntu-desktop",ids)
+    def test_32_bit_machine_is_restricted_to_antix_profile(self):
+        self.assertEqual([x["id"] for x in advisor.recommend(2,"x86")],["antix"])
+
+    def test_64_bit_cpu_is_detected_even_with_32_bit_windows(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/"inventory.json"
+            p.write_text(json.dumps({"computer":{"TotalPhysicalMemory":8*1024**3,"SystemType":"x86-based PC"},
+                "operating_system":{"OSArchitecture":"32-bit"},
+                "processors":[{"Name":"Intel(R) Core(TM) CPU","DataWidth":64}]}))
+            ram, arch=advisor.read_inventory(p)
+            self.assertEqual(arch,"x64")
+            self.assertEqual(ram,8.0)
+
+    def test_wmi_architecture_code_is_authoritative(self):
+        self.assertEqual(advisor.detect_architecture({"Architecture":9,"DataWidth":64},{},{}),"x64")
+        self.assertEqual(advisor.detect_architecture({"Architecture":0,"DataWidth":32},{},{}),"x86")
+
+    def test_arm64_is_not_misclassified_as_x64(self):
+        self.assertEqual(advisor.detect_architecture({"Name":"ARM Processor","DataWidth":64},{},{"OSArchitecture":"ARM64"}),"unknown")
+        self.assertEqual(advisor.recommend(16,"unknown"),[])
+
+    def test_unknown_architecture_gets_no_recommendation(self):
+        self.assertEqual(advisor.recommend(8,"unknown"),[])
+
+    def test_extremely_low_ram_is_flagged_no_match(self):
+        self.assertEqual(advisor.recommend(0.25,"x86"),[])
+
+if __name__=="__main__": unittest.main()

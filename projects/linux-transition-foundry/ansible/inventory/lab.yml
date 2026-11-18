@@ -1,0 +1,7 @@
+# Replace with an explicitly authorised disposable Ubuntu test VM.
+all:
+  children:
+    linux_office:
+      hosts: {}
+      vars:
+        ansible_connection: local

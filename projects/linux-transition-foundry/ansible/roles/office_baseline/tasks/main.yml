@@ -1,0 +1,75 @@
+---
+- name: Refresh APT metadata
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  tags: [packages]
+
+- name: Install approved common packages
+  ansible.builtin.apt:
+    name: "{{ baseline_common_packages }}"
+    state: present
+  when: baseline_install_common_packages | bool
+  tags: [packages]
+
+- name: Install approved office profile
+  ansible.builtin.apt:
+    name: "{{ baseline_office_packages }}"
+    state: present
+  when: baseline_office_profile | bool
+  tags: [packages, office]
+
+- name: Ensure AppArmor service is enabled
+  ansible.builtin.service:
+    name: apparmor
+    enabled: true
+    state: started
+  tags: [security]
+
+- name: Configure unattended upgrades
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "{{ '1' if baseline_enable_unattended_upgrades else '0' }}";
+  tags: [updates]
+
+- name: Enable unattended-upgrades service when requested
+  ansible.builtin.service:
+    name: unattended-upgrades
+    enabled: true
+    state: started
+  when: baseline_enable_unattended_upgrades | bool
+  tags: [updates]
+
+- name: Configure UFW default deny incoming
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+  when: baseline_manage_firewall | bool
+  tags: [firewall]
+
+- name: Configure UFW default allow outgoing
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+  when: baseline_manage_firewall | bool
+  tags: [firewall]
+
+- name: Allow explicitly approved TCP ports
+  community.general.ufw:
+    rule: allow
+    port: "{{ item | string }}"
+    proto: tcp
+  loop: "{{ baseline_ufw_allowed_tcp_ports }}"
+  when: baseline_manage_firewall | bool
+  tags: [firewall]
+
+- name: Enable UFW only after explicit opt-in
+  community.general.ufw:
+    state: enabled
+  when: baseline_manage_firewall | bool
+  tags: [firewall]
