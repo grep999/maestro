@@ -97,11 +97,43 @@
               "not_run"
             ]
           },
+          "required": {
+            "type": "boolean"
+          },
           "command": {
             "type": "string"
           },
           "exit_code": {
             "type": "integer"
+          },
+          "log_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "evidence_class": {
+            "enum": [
+              "VERIFIED",
+              "OBSERVED",
+              "INFERRED",
+              "ASSUMED",
+              "PLANNED",
+              "BLOCKED",
+              "SUPERSEDED"
+            ]
+          },
+          "runner_identity": {
+            "type": "string"
+          },
+          "ran_on_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "category": {
+            "type": "string"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
           },
           "evidence_url": {
             "type": "string",
