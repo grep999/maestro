@@ -1,0 +1,45 @@
+{
+  "candidate_ref": "artifact:health-endpoint-v1",
+  "candidate_sha": "0123456789abcdef0123456789abcdef01234567",
+  "base_sha": "0000000000000000000000000000000000000000",
+  "branch": "feat/health-endpoint",
+  "worktree": "/tmp/maestro-wt-health",
+  "outcome": "Integrated /health endpoint with unit tests on feature branch",
+  "changed_artifacts": [
+    "artifact:health-endpoint-v1"
+  ],
+  "changed_paths": [
+    "src/api/health.py",
+    "tests/test_health.py",
+    "docs/api.md"
+  ],
+  "checks": [
+    {
+      "name": "unit-tests",
+      "outcome": "passed",
+      "required": true,
+      "command": "python -m pytest -q tests/test_health.py",
+      "exit_code": 0,
+      "log_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "evidence_class": "VERIFIED",
+      "runner_identity": "gate-runner@ci",
+      "ran_on_sha": "0123456789abcdef0123456789abcdef01234567",
+      "category": "test"
+    },
+    {
+      "name": "lint",
+      "outcome": "passed",
+      "required": false,
+      "command": "python -m ruff check src/api/health.py",
+      "exit_code": 0,
+      "log_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "evidence_class": "VERIFIED",
+      "runner_identity": "gate-runner@ci",
+      "ran_on_sha": "0123456789abcdef0123456789abcdef01234567",
+      "category": "lint"
+    }
+  ],
+  "risks": [
+    "uptime clock source still ASSUMED pending SRE confirmation"
+  ]
+}
