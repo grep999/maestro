@@ -1,0 +1,21 @@
+{
+  "expected_vs_actual": "matched — /health shipped with tests; SRE accepted process-start uptime",
+  "lessons": [
+    "pin acceptance criteria for payload stability before implementation",
+    "VERIFIED gate results with log_hash shortened review time"
+  ],
+  "state_updates": [
+    "endpoint documented in docs/api.md",
+    "load balancer probe path updated in runbook"
+  ],
+  "next_decision": "continue — next increment is /ready with dependency checks",
+  "evidence": [
+    "pr://42",
+    "review:evidence",
+    "gate:unit-tests@0123456789abcdef0123456789abcdef01234567"
+  ],
+  "progress": 25,
+  "objective_complete": false,
+  "rework_hours": 0.5,
+  "cost_tokens": 42000
+}
