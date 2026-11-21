@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "maestro-workflow"
-version = "0.2.0"
-description = "Project-agnostic workflow orchestration engine"
+version = "0.3.0"
+description = "Agent-agnostic workflow control plane for verified coding outcomes"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = []
+readme = "README.md"
 
 [project.scripts]
 maestro = "maestro.cli:main"
 
 [tool.setuptools]
-packages = ["maestro"]
+packages = ["maestro", "maestro.adapters"]

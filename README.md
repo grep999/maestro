@@ -1,73 +1,142 @@
 # Maestro
 
-**Maestro is an independent, project-agnostic workflow orchestration system.** It governs how work moves from intention to verified outcome and how learning compounds across cycles. It is not owned by, embedded in, or defined by any one managed project.
+**Agent-agnostic workflow control plane for verified coding outcomes.**
 
-Every flow uses the same lifecycle and progression:
+Maestro governs how work moves from intention → isolated candidate → independent
+challenge → learned next cycle. It does not embed a coding agent. It orchestrates
+whatever agents you already trust (Claude Code, Codex, OpenCode, Gemini CLI,
+Copilot, local models, custom CLIs) under a strict lifecycle:
 
+```text
 GROUNDING → MOMENTUM → MASTERY → REPETITION → GROUNDING
+```
 
-- **Grounding** establishes reality, sources, constraints, dependencies, uncertainty and the next coherent objective.
-- **Momentum** is the delivery stage: coordinated execution, building and integration of the selected increment. It is not an agent or department.
-- **Mastery** independently challenges the exact candidate against acceptance criteria and evidence.
-- **Repetition** compares intent with outcome, updates durable state and either completes the objective or begins the next cycle.
+- **Grounding** establishes reality, sources, constraints, and the next coherent increment
+- **Momentum** is coordinated execution and integration (not a role or a score)
+- **Mastery** independently challenges the *exact* candidate against acceptance + evidence
+- **Repetition** compares intent vs outcome, updates durable state, and compounds learning
 
-Choosing belongs to Grounding; building and integration belong to Momentum; challenge belongs to Mastery; learning belongs to Repetition.
+Stage ≠ role. Progress is monotonic. Evidence has classes. External actions stay
+approval-gated. The engine is honest about what it does *not* do: it does not
+launch agents by itself — adapters do.
 
-## Stage, role and progression are different
+## Why this exists
 
-| Dimension | Meaning |
-|---|---|
-| Stage | Position in the shared four-stage lifecycle |
-| Role | Capability assigned inside a stage |
-| Cycle | Current pass through the lifecycle |
-| Objective progress | Accumulated 0–100 outcome progress across cycles; never resets |
-| Revision | Optimistic-concurrency version of the workflow |
+The market is full of agent *launchers*. Few are trustworthy *governors*.
+Maestro’s niche is the neutral control plane that proves what an agent did and
+whether an independent party verified it — suitable for real project coding work
+out of the box.
 
-Architect, Researcher, Builder, Independent Reviewer and Domain Specialist are roles. Momentum is a stage. Repetition is a learning stage and regenerative principle, not a fourth worker.
+## Install
+
+```bash
+python -m venv .venv && . .venv/bin/activate
+pip install -e .
+```
+
+Python 3.10+, zero runtime dependencies. Default DB: `.maestro/state.sqlite3`.
+
+## Coding out of the box
+
+```bash
+# Ground a workflow in the current git repo
+maestro coding-start my-app "Add /health" "Expose /health with unit tests" --risk R1
+
+# Move to delivery and seed standard work items
+maestro begin-momentum <WORKFLOW_ID> --revision <N>
+maestro coding-seed-work <WORKFLOW_ID> --revision <N>
+
+# List agent adapters / probe health
+maestro adapters
+maestro adapter-health --name echo
+
+# Run deterministic gates (VERIFIED evidence with log hashes)
+maestro run-checks --workspace . --preset python
+
+# Full lifecycle still works via explicit packets
+maestro ground <ID> examples/coding/grounding.feature.json --revision 0
+maestro deliver <ID> examples/coding/momentum.feature.json --revision <N>
+maestro submit-mastery <ID> --revision <N>
+maestro review <ID> PASS --revision <N> --evidence '["review:ok"]' --actor reviewer-bot
+maestro learn <ID> examples/coding/repetition.feature.json --revision <N>
+```
+
+See [docs/coding/OUT_OF_THE_BOX.md](docs/coding/OUT_OF_THE_BOX.md) for the full path.
+
+## Core guarantees (v0.3.0)
+
+| Guarantee | Enforcement |
+|-----------|-------------|
+| Cycle isolation | Packets tagged by cycle; cleared on cycle advance |
+| Reviewer independence | `review` rejects when actor equals builder |
+| Candidate binding | Review must match submitted `candidate_ref` |
+| Assignment stability | Work-item churn does not invalidate running assignments |
+| Append-only audit | SQL triggers block update/delete on events |
+| Optimistic concurrency | Stale revisions rejected |
+| Gate trust | `GateRunner` produces `VERIFIED` checks with exit code + log hash |
+
+## Architecture surface
+
+```text
+maestro/
+  engine.py          # durable state machine (SQLite)
+  coding.py          # git identity, worktree helpers, packet builders, presets
+  checks.py          # deterministic gate runner
+  adapters/
+    protocol.py      # AgentAdapter contract
+    subprocess_adapter.py
+  cli.py
+```
+
+## Adapter protocol (agent-agnostic)
+
+```python
+capabilities() → AdapterCapability
+start(AssignmentPacket) → run_id
+stream(run_id) → Iterator[AgentEvent]
+result(run_id) → AgentResult
+cancel(run_id)
+```
+
+Register with `register_adapter("name", factory)`. Prefer different
+`model_identity` for builder vs independent reviewer.
 
 ## Runtime
 
-The first runtime is dependency-free Python 3.10+ with SQLite persistence. One database can hold many unrelated workflows. State transitions are guarded, revisioned and recorded in an append-only event history. Stage-scoped work items have dependency gates. Specialist handoffs cannot advance workflow progression by themselves.
+```bash
+maestro start sample-project "First workflow" "Deliver a verified outcome"
+python -m maestro --help
+```
 
-Install and start:
-
-    python -m venv .venv
-    . .venv/bin/activate
-    pip install -e .
-    maestro start sample-project "First workflow" "Deliver a verified outcome"
-
-Use python -m maestro --help for commands. Default database: .maestro/state.sqlite3; override with --db PATH.
-
-## Minimal cycle
-
-    maestro start sample-project "First workflow" "Deliver a verified outcome"
-    maestro ground WORKFLOW_ID examples/grounding.example.json --revision 0
-    maestro begin-momentum WORKFLOW_ID --revision 1
-    maestro deliver WORKFLOW_ID examples/momentum.example.json --revision 2
-    maestro submit-mastery WORKFLOW_ID --revision 3
-    maestro review WORKFLOW_ID PASS --revision 4 --evidence '["review://evidence"]'
-    maestro learn WORKFLOW_ID examples/repetition.example.json --revision 5
-
-Revisions increment on state mutations. Always read current state before a transition; stale writes are rejected. Use show, list, events, add-work, start-work, complete-work, work-items, assign, assignment and assignments for orchestration.
+One database can hold many unrelated workflows. State transitions are guarded,
+revisioned, and recorded in an append-only event history.
 
 ## Repository map
 
-- maestro/ — SQLite-backed state machine and CLI.
-- docs/STAGE_MODEL.md — canonical lifecycle, gates and progression.
-- docs/SPECIALIST_ROLES.md — capabilities separate from stages.
-- docs/ — constitution, research, integration and roadmap.
-- .github/agents/ — specialist role contracts.
-- .github/workflows/ — deterministic CI validation.
-- schemas/ and examples/ — portable task, handoff and workflow contracts.
-- projects/ — optional project adapters; Maestro works with this directory empty.
-- tests/ — state-machine and persistence regression tests.
+- `docs/` — constitution, stage model, roles, roadmap, coding guide
+- `schemas/` — portable task / handoff / workflow contracts
+- `examples/` + `examples/coding/` — packets you can run today
+- `tests/` — state machine + adapter + gate coverage
+- `projects/` — optional adapters; core works with this directory empty
 
 ## Verify
 
-    python -m unittest discover -s tests -v
-    python scripts/validate_contracts.py
-    python -m compileall -q maestro scripts tests
+```bash
+python -m unittest discover -s tests -v
+python scripts/validate_contracts.py
+python -m compileall -q maestro scripts tests
+```
 
-## Runtime honesty and safety
+## Safety stance
 
-The engine persists workflow state and specialist dispatch packets; it does not claim to launch independent AI agents by itself. Execution adapters must be explicitly configured, permissioned and observable. Static checks are not runtime tests. Missing or stale evidence is not PASS. External publication, spending, submissions, sending, merging, deployment and destructive actions require explicit authorization.
+External publication, spending, merge, deploy, and destructive actions require
+explicit authorization. Missing evidence is not PASS. Static checks are not
+runtime tests. Events are triggers, not proof — reconcile against live state.
+
+The engine persists workflow state and specialist dispatch packets; it does not
+claim to launch independent AI agents by itself. Execution adapters must be
+explicitly configured, permissioned, and observable.
+
+## License
+
+MIT
