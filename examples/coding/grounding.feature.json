@@ -1,0 +1,34 @@
+{
+  "purpose": "Add a versioned /health endpoint that reports process uptime and git SHA",
+  "sources": [
+    "git:repo@main",
+    "rfc://api-conventions#health",
+    "issue://PROJ-142"
+  ],
+  "constraints": [
+    "no force-push to main",
+    "no secrets in commits or logs",
+    "work in isolated branch/worktree",
+    "public response must not expose internal hostnames"
+  ],
+  "dependencies": [
+    "existing HTTP router",
+    "logging middleware"
+  ],
+  "risks": [
+    "risk tier R1",
+    "health check may be scraped by load balancers — keep payload stable"
+  ],
+  "acceptance": [
+    "GET /health returns 200 with JSON {status, uptime_seconds, git_sha}",
+    "unit tests cover happy path and missing-git fallback",
+    "required gate checks pass on the candidate SHA with VERIFIED evidence",
+    "independent reviewer examines the exact candidate and records findings"
+  ],
+  "next_increment": "Implement /health with tests on feature branch",
+  "baseline_ref": "0000000000000000000000000000000000000000",
+  "stakeholders": ["platform", "sre"],
+  "uncertainty": [
+    "exact uptime source (process start vs request clock) to confirm with SRE"
+  ]
+}
