@@ -1,40 +1,69 @@
 # Maestro Implementation Roadmap
 
-Maestro is built as a project-agnostic orchestrator. Its core lifecycle is invariant; project adapters supply domain context without redefining progression.
+Maestro is built as a project-agnostic orchestrator. Its core lifecycle is
+invariant; project adapters and coding presets supply domain context without
+redefining progression.
 
 ## v0.2 — Operational local core
 
 Implemented:
-- Four-stage lifecycle with guarded Grounding, Momentum, Mastery and Repetition transitions.
-- SQLite persistence, append-only event history and optimistic revision checks.
-- Stage-scoped work items and dependency gates.
-- Separate cycle and monotonic objective progress.
-- Specialist assignment and return packets with stale-dispatch detection.
-- CLI, JSON schemas, examples and regression tests.
-- GitHub Actions validation for contracts, tests and compilation.
+- Four-stage lifecycle with guarded Grounding, Momentum, Mastery and Repetition
+- SQLite persistence, append-only event history, optimistic revision checks
+- Stage-scoped work items and dependency gates
+- Separate cycle and monotonic objective progress
+- Specialist assignment packets with stale-dispatch detection
+- CLI, JSON schemas, examples, regression tests
 
-## v0.3 — Execution adapters
+## v0.2.1 — Phase 0 invariant hardening
 
-- Adapter protocol for GitHub, documents, research and external project systems.
-- Capability discovery and permission-scoped dispatch.
-- Durable run records, retries, idempotency and cancellation.
-- Execution telemetry and observable handoff state.
-- Independent reviewer isolation and conflict-of-interest rules.
+Implemented:
+- Per-cycle packets (cleared on cycle advance; gates reject stale cycle evidence)
+- Reviewer independence enforced (builder cannot approve own candidate)
+- Candidate binding on review
+- Work-item mutations no longer invalidate running assignments
+- Transactional stage gates (`BEGIN IMMEDIATE`), microsecond timestamps
+- CONDITIONAL requires findings; fail_count + root-cause flag
 
-## v0.4 — Orchestration intelligence
+## v0.3 — Coding out of the box (current)
 
-- Dynamic role composition based on task requirements and evidence gaps.
-- Cross-workflow dependency graph and portfolio-level prioritization.
-- Recovery plans for stale sources, interrupted work and unavailable tools.
-- Forecast versus outcome calibration and risk learning.
+Implemented:
+- **Agent adapter protocol** (`capabilities`, `start`, `stream`, `result`, `cancel`)
+- Subprocess adapter + registry (echo + generic CLI agents)
+- **Deterministic gate runner** — VERIFIED checks with exit_code + log_hash + SHA
+- **Coding module** — git identity, worktree helpers, packet builders, presets
+- CLI: `coding-start`, `coding-seed-work`, `adapters`, `adapter-health`, `run-checks`
+- Coding examples and out-of-the-box guide
 
-## v0.5 — Service operation
+## v0.4 — First-class agent adapters & isolation
 
-- API service and authenticated clients.
-- Multi-user ownership, access control and audit export.
-- Backups, migrations, observability and operational runbooks.
-- Deterministic release process and compatibility guarantees.
+- Production adapters: Claude Code, Codex, OpenCode, Gemini CLI, Copilot
+- Git worktree lifecycle managed by the control plane
+- Sandbox / container isolation + scoped credentials
+- Routing policy by role, risk, cost, data class (reviewer ≠ builder by vendor)
+- Streaming event persistence into the audit log
+
+## v0.5 — Trust & policy
+
+- Policy-as-code (OPA/Cedar) for path protection and R0–R3 gates
+- Signed attestations / hash-chained audit export
+- Identity-backed actors (OIDC) so independence is not free-text
+- Cost and token budgets with hard stops
+
+## v0.6 — Service operation
+
+- Postgres backend, REST/gRPC API, webhook ingestion (GitHub/GitLab/Linear)
+- Multi-user RBAC, SSO, multi-tenancy
+- OpenTelemetry, operational runbooks, SOC2-oriented controls
+
+## v0.7 — Portfolio intelligence
+
+- Cross-workflow dependency graph and prioritization
+- Eval harness: same task across agents → pass rate, cost, rework
+- Repetition stage becomes measurable calibration data
+- Forecast vs outcome learning loops
 
 ## Release discipline
 
-A stage is complete only when exit criteria have reproducible evidence. A configured workflow is not a successful run. A role prompt is not an independent agent process. External publication, spending, submissions, sending, merging, deployment and destructive actions remain approval-gated.
+A stage is complete only when exit criteria have reproducible evidence.
+A role prompt is not an independent agent process.
+External publication, spending, merge, deploy remain approval-gated.
